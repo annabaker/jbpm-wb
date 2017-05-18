@@ -184,6 +184,11 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
             presenter.addCaseComment(newCommentTextArea.getValue());
         }
     }
+    
+    public void viewMoreButton(@ForEvent("click") final Event e) {
+        
+        
+    }
 
     private boolean validateForm() {
         clearErrorMessages();

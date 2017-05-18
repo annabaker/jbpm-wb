@@ -49,6 +49,10 @@ public class PaginationViewImpl implements IsElement {
     @Inject
     @DataField("prevPage")
     Anchor prevPage;
+    
+    @Inject
+    @DataField("loadMoreComments")
+    Anchor loadMoreComments;
 
     List allElementsList = new ArrayList();
     int currentPage = 0;

@@ -59,8 +59,7 @@ public class MockCaseManagementService extends RemoteCaseManagementServiceImpl {
     private static final String CASE_STAGES_JSON = "case_stages.json";
     private static final String CASE_ACTIONS_JSON = "case_actions.json";
     private static final String PROCESS_DEFINITION_JSON = "process_definitions.json";
-
-
+    
     private static int commentIdGenerator = 0;
     private static long actionIdGenerator = 9;
 

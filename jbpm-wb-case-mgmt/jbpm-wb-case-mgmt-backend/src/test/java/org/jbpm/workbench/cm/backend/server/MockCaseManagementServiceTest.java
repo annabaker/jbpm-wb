@@ -16,7 +16,6 @@
 
 package org.jbpm.workbench.cm.backend.server;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -68,7 +67,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RemoteCaseManagementServiceImplTest {
+public class MockCaseManagementServiceTest {
 
     final String serverTemplateId = "serverTemplateId";
     final String containerId = "containerId";
@@ -243,41 +242,16 @@ public class RemoteCaseManagementServiceImplTest {
     }
     
     @Test
-    public void testGetComments_bulkComments() {
-        List<CaseComment> bulkCaseComments = new ArrayList<CaseComment>();
-        
-        for (int i = 0 ; i < 30 ; i++) {
-            bulkCaseComments.add(createTestComment());
-        }
-        
-        when(clientMock.getComments(containerId, caseId, 0, PAGE_SIZE_UNLIMITED)).thenReturn(bulkCaseComments);
-        
+    public void testGetComments_paginated() {
+        final List<CaseCommentSummary> caseComments = testedService.getComments(serverTemplateId, containerId, caseId);
+        final CaseComment caseComment = createTestComment();
+        when(clientMock.getComments(containerId, caseId, 0, PAGE_SIZE_UNLIMITED)).thenReturn(singletonList(caseComment));
+
         final List<CaseCommentSummary> comments = testedService.getComments(serverTemplateId, containerId, caseId);
-        
         assertNotNull(comments);
-        assertEquals(20, comments.size());
-        
+        assertEquals(1, comments.size());
+        assertCaseComment(caseComment, comments.get(0));
     }
-    
-    @Test
-    public void testGetCommentPartitions_bulkComments() {
-        List<CaseComment> bulkCaseComments = new ArrayList<CaseComment>();
-        
-        for (int i = 0 ; i < 55; i++) {
-            bulkCaseComments.add(createTestComment());
-        }
-        
-        final List<List<CaseCommentSummary>> partitions = testedService.getCommentPartitions(serverTemplateId, containerId, caseId);
-        
-        when(clientMock.getComments(containerId, caseId, 0, PAGE_SIZE_UNLIMITED)).thenReturn(bulkCaseComments);
-                        
-        assertNotNull(bulkCaseComments);
-        assertEquals(55, partitions.get(0).size() + partitions.get(1).size() + partitions.get(2).size());
-        assertEquals(3, partitions.size());
-        assertEquals(15, partitions.get(2).size());
-        
-    }
-    
 
     @Test
     public void testGetComments_singleComment() {
