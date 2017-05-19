@@ -71,13 +71,6 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
                 }
         ).getComments(serverTemplateId, containerId, caseId);
     }
-    
-    public void loadMoreComments(final int i) {
-        
-        caseService.call().getCommentPartitions(serverTemplateId, containerId, caseId);
-        
-        view.setCaseCommentList(caseCommentList);
-    }
 
     public void sortComments(final boolean sortAsc) {
         this.sortAsc =sortAsc;
@@ -103,7 +96,8 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
                 (Void) -> refreshComments()
         ).removeComment(serverTemplateId, containerId, caseId, caseCommentSummary.getId());
     }
-    
+
+
     public interface CaseCommentsView extends UberElement<CaseCommentsPresenter> {
 
         void clearCommentInputForm();

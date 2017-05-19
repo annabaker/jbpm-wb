@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -48,14 +49,9 @@ import org.kie.server.api.model.instance.NodeInstance;
 import org.kie.server.client.CaseServicesClient;
 import org.kie.server.client.UserTaskServicesClient;
 
-import com.google.common.collect.Lists;
-
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-
-import java.util.ArrayList;
-
 import static java.util.Comparator.comparing;
 
 @Service
@@ -63,7 +59,6 @@ import static java.util.Comparator.comparing;
 public class RemoteCaseManagementServiceImpl implements CaseManagementService {
 
     public static final int PAGE_SIZE_UNLIMITED = Integer.MAX_VALUE;
-    public static final int COMMENTS_PAGE_SIZE = 20;
     public static final String CASE_OWNER_ROLE = "owner";
     public static final List<String> NODE_TYPE_HUMAN_TASK = Arrays.asList("Human Task", "HumanTaskNode");
 
@@ -156,31 +151,9 @@ public class RemoteCaseManagementServiceImpl implements CaseManagementService {
     @Override
     public List<CaseCommentSummary> getComments(final String serverTemplateId, final String containerId, final String caseId) {
         final List<CaseComment> caseComments = client.getComments(containerId, caseId, 0, PAGE_SIZE_UNLIMITED);
-        
-        if (caseComments.size() == 0) {
-            List<CaseComment> emptyList = new ArrayList<>();
-            return emptyList.stream().map(new CaseCommentMapper()).collect(toList());
-       }
-        
-        List<List<CaseComment>> partitions = Lists.partition(caseComments, COMMENTS_PAGE_SIZE);
-        
-        return (partitions.get(0)).stream().map(new CaseCommentMapper()).collect(toList());
+        return caseComments.stream().map(new CaseCommentMapper()).collect(toList());
     }
-    
-    @Override
-    public List<List<CaseCommentSummary>> getCommentPartitions(final String serverTemplateId, final String containerId, final String caseId) {
-        final List<CaseComment> caseComments = client.getComments(containerId, caseId, 0, PAGE_SIZE_UNLIMITED);
-        List<List<CaseCommentSummary>> caseCommentSummaries = new ArrayList<>();
-        
-        List<List<CaseComment>> partitions = Lists.partition(caseComments, COMMENTS_PAGE_SIZE);
-        
-        for (int i = 0 ; i < partitions.size() ; i ++) {
-            caseCommentSummaries.add((partitions.get(i)).stream().map(new CaseCommentMapper()).collect(toList()));
-        }
 
-        return caseCommentSummaries;
-    }
-    
     @Override
     public void addComment(final String serverTemplateId, final String containerId, final String caseId,
                            final String author, final String text) {
