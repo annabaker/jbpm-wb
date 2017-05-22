@@ -16,6 +16,7 @@
 
 package org.jbpm.workbench.cm.backend.server;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -239,6 +240,25 @@ public class RemoteCaseManagementServiceImplTest {
 
         final CaseInstanceSummary cis = testedService.getCaseInstance(serverTemplateId, containerId, caseId);
         assertNull(cis);
+    }
+    
+    @Test
+    public void testGetComments_bulkComments() {
+        
+        final List<CaseComment> caseComments = new ArrayList<CaseComment>();
+        for (int i = 0; i < 55 ; i++) {
+            
+            caseComments.add(createTestComment());
+            
+        }
+        
+        when(clientMock.getComments(containerId, caseId, 0, PAGE_SIZE_UNLIMITED)).thenReturn(caseComments);
+        final List<CaseCommentSummary> comments = testedService.getComments(serverTemplateId, containerId, caseId);
+
+        assertNotNull(caseComments);
+        assertEquals(55, caseComments.size());
+        assertEquals(20, comments.size());
+
     }
 
     @Test
