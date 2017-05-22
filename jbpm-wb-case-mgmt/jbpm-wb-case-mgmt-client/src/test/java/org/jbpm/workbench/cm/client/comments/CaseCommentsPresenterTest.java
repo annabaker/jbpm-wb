@@ -62,6 +62,8 @@ public class CaseCommentsPresenterTest extends AbstractCaseInstancePresenterTest
     private final String author = "author";
     private final String text = "text";
     private final Date addedAt = new Date();
+    private final int currentPage = 0;
+    private final int pageSize = 20;
 
     private final String serverTemplateId = "serverTemplateId";
 
@@ -90,6 +92,19 @@ public class CaseCommentsPresenterTest extends AbstractCaseInstancePresenterTest
 
         verify(caseManagementService).addComment(eq(serverTemplateId), eq(cis.getContainerId()), eq(cis.getCaseId()), eq(author), eq(text));
         verifyClearCaseInstance(1);
+    }
+    
+    // to do
+    @Test
+    public void testLoadMoreCaseComments() {
+        final CaseInstanceSummary cis = newCaseInstanceSummary();
+        when(identity.getIdentifier()).thenReturn(author);
+
+        setupCaseInstance(cis, serverTemplateId);
+        presenter.loadMoreComments();
+        
+        verify(caseManagementService).getComments(eq(serverTemplateId), eq(cis.getContainerId()), eq(cis.getCaseId()), eq(currentPage + 1), eq(pageSize));
+
     }
 
     @Test
