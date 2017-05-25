@@ -16,6 +16,11 @@
 
 package org.jbpm.workbench.cm.backend.server;
 
+import static java.util.Collections.singletonList;
+import static java.util.Comparator.comparing;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -48,11 +53,6 @@ import org.kie.server.api.model.definition.ProcessDefinition;
 import org.kie.server.api.model.instance.NodeInstance;
 import org.kie.server.client.CaseServicesClient;
 import org.kie.server.client.UserTaskServicesClient;
-
-import static java.util.Collections.singletonList;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
-import static java.util.Comparator.comparing;
 
 @Service
 @ApplicationScoped
@@ -148,12 +148,20 @@ public class RemoteCaseManagementServiceImpl implements CaseManagementService {
         client.removeGroupFromRole(containerId, caseId, roleName, group);
     }
 
+    // to do: remove?
     @Override
     public List<CaseCommentSummary> getComments(final String serverTemplateId, final String containerId, final String caseId) {
         final List<CaseComment> caseComments = client.getComments(containerId, caseId, 0, PAGE_SIZE_UNLIMITED);
         return caseComments.stream().map(new CaseCommentMapper()).collect(toList());
     }
+    
+    @Override
+    public List<CaseCommentSummary> getComments(final String serverTemplateId, final String containerId, final String caseId, int currentPage, int pageSize) {
 
+        final List<CaseComment> caseComments = client.getComments(containerId, caseId, currentPage, pageSize);
+        return caseComments.stream().map(new CaseCommentMapper()).collect(toList());
+    }
+    
     @Override
     public void addComment(final String serverTemplateId, final String containerId, final String caseId,
                            final String author, final String text) {

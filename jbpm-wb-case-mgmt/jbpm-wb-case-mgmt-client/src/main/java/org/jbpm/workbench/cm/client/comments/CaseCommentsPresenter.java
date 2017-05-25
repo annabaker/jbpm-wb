@@ -21,6 +21,7 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jbpm.workbench.cm.client.util.AbstractCaseInstancePresenter;
 import org.jbpm.workbench.cm.model.CaseCommentSummary;
@@ -44,6 +45,8 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
     User identity;
 
     boolean sortAsc = false;
+    int currentPage = 0;
+    int pageSize = 20;
 
     @WorkbenchPartTitle
     public String getTittle() {
@@ -105,6 +108,8 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
         void setCaseCommentList(List<CaseCommentSummary> caseCommentList);
 
         void resetPagination();
+        
+        void setVisibleItems(List<CaseCommentSummary> visibleItems);
 
     }
 
@@ -112,6 +117,17 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
 
         String label();
 
+    }
+    
+    public int getCurrentPage() {
+        return this.currentPage;
+    }
+
+    public void loadMoreComments(Button loadMoreComments) {
+        // TODO Auto-generated method stub
+        this.currentPage = currentPage + 1;
+        
+        caseService.call().getComments(serverTemplateId, containerId, caseId, this.currentPage, 20);
     }
 
 }

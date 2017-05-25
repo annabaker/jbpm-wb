@@ -249,7 +249,7 @@ public class RemoteCaseManagementServiceImplTest {
         int pageSize = 20;
         
         final List<CaseComment> caseComments = new ArrayList<CaseComment>();
-        for (int i = 0; i < 55 ; i++) {
+        for (int i = 0; i < 35 ; i++) {
             
             caseComments.add(createTestComment());
             
@@ -259,7 +259,7 @@ public class RemoteCaseManagementServiceImplTest {
         final List<CaseCommentSummary> comments = testedService.getComments(serverTemplateId, containerId, caseId, 0, pageSize);
 
         assertNotNull(caseComments);
-        assertEquals(55, caseComments.size());
+        assertEquals(35, caseComments.size());
         assertEquals(20, comments.size());
 
     }
@@ -270,7 +270,7 @@ public class RemoteCaseManagementServiceImplTest {
         int pageSize = 20;
         
         final List<CaseComment> caseComments = new ArrayList<CaseComment>();
-        for (int i = 0; i < 55 ; i++) {
+        for (int i = 0; i < 35 ; i++) {
             
             caseComments.add(createTestComment());
             
@@ -280,7 +280,7 @@ public class RemoteCaseManagementServiceImplTest {
         final List<CaseCommentSummary> comments = testedService.getComments(serverTemplateId, containerId, caseId, 1, pageSize);
 
         assertNotNull(caseComments);
-        assertEquals(55, caseComments.size());
+        assertEquals(35, caseComments.size());
         assertEquals(15, comments.size());
 
     }

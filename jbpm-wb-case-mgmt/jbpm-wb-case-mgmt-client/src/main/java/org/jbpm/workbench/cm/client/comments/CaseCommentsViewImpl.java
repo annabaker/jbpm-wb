@@ -68,6 +68,10 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
     @Inject
     @DataField("sort-alpha-desc")
     private Button sortAlphaDesc;
+    
+    @Inject
+    @DataField("load-more-comments")
+    private Button loadMoreComments;
 
     @Inject
     @Bound
@@ -110,6 +114,7 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
     private TranslationService translationService;
 
     List<CaseCommentSummary> allCommentsList;
+
 
     @PostConstruct
     public void init() {
@@ -166,7 +171,11 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
 
     @Override
     public void setVisibleItems(List<CaseCommentSummary> visibleItems) {
-        this.caseCommentList.setModel(visibleItems);
+        
+        if (this.allCommentsList.size() <= 20 && pagination.getCurrentPage() == 0) {
+            this.caseCommentList.setModel(visibleItems);
+        }
+        
         int pageSize =visibleItems.size();
         if(pageSize > 1){
             comments.getComponent(pageSize-1).setLastElementStyle();
@@ -213,4 +222,11 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
         removeCSSClass(toShow, "hidden");
         presenter.sortComments(sortByAsc);
     }
+    
+    @EventHandler("load-more-comments")
+    public void loadMoreComments(final @ForEvent("click") MouseEvent event) {
+        presenter.loadMoreComments(loadMoreComments);
+    }
 }
+    
+ 
