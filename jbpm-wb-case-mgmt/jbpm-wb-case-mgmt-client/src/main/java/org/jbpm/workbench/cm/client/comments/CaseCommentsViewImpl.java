@@ -172,7 +172,7 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
     @Override
     public void setVisibleItems(List<CaseCommentSummary> visibleItems) {
         
-        if (this.allCommentsList.size() <= 20 && pagination.getCurrentPage() == 0) {
+        if (this.allCommentsList.size() <= 20) {
             this.caseCommentList.setModel(visibleItems);
         }
         
