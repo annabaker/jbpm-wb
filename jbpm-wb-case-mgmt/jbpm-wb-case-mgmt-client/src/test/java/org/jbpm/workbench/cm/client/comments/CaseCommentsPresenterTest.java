@@ -79,6 +79,18 @@ public class CaseCommentsPresenterTest extends AbstractCaseInstancePresenterTest
         verify(caseCommentsView).setCaseCommentList(Collections.singletonList(caseComment));
         verifyClearCaseInstance(1);
     }
+    
+    @Test
+    public void testLoadMoreComments() {
+        final CaseInstanceSummary cis = newCaseInstanceSummary();
+
+        setupCaseInstance(cis, serverTemplateId);
+        
+        presenter.loadMoreComments();
+        presenter.loadMoreComments();
+        
+        assertEquals(presenter.getCurrentPage(), 2);
+    }
 
     @Test
     public void testAddCaseComment() {

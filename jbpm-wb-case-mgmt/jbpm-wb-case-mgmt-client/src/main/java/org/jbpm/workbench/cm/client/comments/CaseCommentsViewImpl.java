@@ -71,6 +71,7 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
     
     @Inject
     @DataField("load-more-comments")
+    @SuppressWarnings("PMD.UnusedPrivateField")
     private Button loadMoreComments;
 
     @Inject
@@ -105,10 +106,6 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
     @Inject
     @DataField("scrollbox")
     private Div scrollbox;
-
-    @Inject
-    @DataField("pagination")
-    private PaginationViewImpl pagination;
 
     @Inject
     private TranslationService translationService;
@@ -148,21 +145,23 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
 
     @Override
     public void resetPagination() {
-        pagination.setCurrentPage(0);
+//        pagination.setCurrentPage(0);
+        presenter.setCurrentPage(0);
         onSortChange(sortAlphaAsc, sortAlphaDesc, false);
     }
 
     @Override
     public void setCaseCommentList(final List<CaseCommentSummary> caseCommentList) {
         allCommentsList = caseCommentList;
-        pagination.init(allCommentsList, this, PAGE_SIZE);
-
+        setVisibleItemsList(presenter.getCurrentPage());
+        
         if (caseCommentList.isEmpty()) {
             removeCSSClass(emptyContainer, "hidden");
         } else {
             addCSSClass(emptyContainer, "hidden");
         }
     }
+    
 
     @Override
     public Div getScrollBox() {
@@ -172,14 +171,29 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
     @Override
     public void setVisibleItems(List<CaseCommentSummary> visibleItems) {
         
-        if (this.allCommentsList.size() <= 20) {
+//        if (this.allCommentsList.size() <= 20) {
             this.caseCommentList.setModel(visibleItems);
-        }
+//        }
         
         int pageSize =visibleItems.size();
         if(pageSize > 1){
             comments.getComponent(pageSize-1).setLastElementStyle();
         }
+    }
+    
+    protected void setVisibleItemsList(int currentPage) {
+        int allItemsSize = allCommentsList.size();
+        List visibleItems;
+
+        if (PAGE_SIZE * (currentPage + 1) < allItemsSize) {
+            visibleItems = allCommentsList.subList(PAGE_SIZE * currentPage,
+            PAGE_SIZE * (currentPage + 1));
+        } else {
+            visibleItems = allCommentsList.subList(PAGE_SIZE * currentPage,
+                                                   allItemsSize);
+        }
+
+        this.setVisibleItems(visibleItems);
     }
 
     @EventHandler("addCommentButton")
@@ -225,7 +239,7 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
     
     @EventHandler("load-more-comments")
     public void loadMoreComments(final @ForEvent("click") MouseEvent event) {
-        presenter.loadMoreComments(loadMoreComments);
+        presenter.loadMoreComments();
     }
 }
     
