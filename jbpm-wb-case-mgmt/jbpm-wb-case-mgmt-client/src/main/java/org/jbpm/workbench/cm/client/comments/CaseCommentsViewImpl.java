@@ -16,7 +16,6 @@
 
 package org.jbpm.workbench.cm.client.comments;
 
-
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -41,6 +40,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+import org.jbpm.workbench.cm.client.pagination.PaginationViewImpl;
 import org.jbpm.workbench.cm.client.util.AbstractView;
 import org.jbpm.workbench.cm.client.util.FormGroup;
 import org.jbpm.workbench.cm.client.util.ValidationState;
@@ -54,8 +54,8 @@ import static org.jbpm.workbench.cm.client.resources.i18n.Constants.*;
 @Dependent
 @Templated
 public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
-        implements CaseCommentsPresenter.CaseCommentsView {
-//    private int PAGE_SIZE = 20;
+        implements CaseCommentsPresenter.CaseCommentsView, PaginationViewImpl.PageList<CaseCommentSummary> {
+    private int PAGE_SIZE = 20;
 
     @Inject
     @DataField("comments")
@@ -103,16 +103,14 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
     @DataField
     Anchor addCommentButton;
 
-//    @Inject
-//    @DataField("scrollbox")
-//    private Div scrollbox;
+    @Inject
+    @DataField("scrollbox")
+    private Div scrollbox;
 
     @Inject
     private TranslationService translationService;
 
     List<CaseCommentSummary> allCommentsList;
-    List<CaseCommentSummary> visibleItems;
-    boolean canLoadMorePages = false;
 
 
     @PostConstruct
@@ -147,6 +145,7 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
 
     @Override
     public void resetPagination() {
+//        pagination.setCurrentPage(0);
         presenter.setCurrentPage(0);
         onSortChange(sortAlphaAsc, sortAlphaDesc, false);
     }
@@ -163,19 +162,38 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
         }
     }
     
+
+    @Override
+    public Div getScrollBox() {
+        return scrollbox;
+    }
+
+    @Override
+    public void setVisibleItems(List<CaseCommentSummary> visibleItems) {
+        
+//        if (this.allCommentsList.size() <= 20) {
+            this.caseCommentList.setModel(visibleItems);
+//        }
+        
+        int pageSize =visibleItems.size();
+        if(pageSize > 1){
+            comments.getComponent(pageSize-1).setLastElementStyle();
+        }
+    }
     
     protected void setVisibleItemsList(int currentPage) {
-        
-        if (this.allCommentsList.size() <= 20) {
-           visibleItems = allCommentsList.subList(0, allCommentsList.size());
-        }
-        
-        else {
-            canLoadMorePages = true;
+        int allItemsSize = allCommentsList.size();
+        List visibleItems;
+
+        if (PAGE_SIZE * (currentPage + 1) < allItemsSize) {
+            visibleItems = allCommentsList.subList(PAGE_SIZE * currentPage,
+            PAGE_SIZE * (currentPage + 1));
+        } else {
+            visibleItems = allCommentsList.subList(PAGE_SIZE * currentPage,
+                                                   allItemsSize);
         }
 
-
-        this.caseCommentList.setModel(visibleItems);
+        this.setVisibleItems(visibleItems);
     }
 
     @EventHandler("addCommentButton")
@@ -221,19 +239,7 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
     
     @EventHandler("load-more-comments")
     public void loadMoreComments(final @ForEvent("click") MouseEvent event) {
-        
-        if (canLoadMorePages == true) {
-            presenter.loadMoreComments();
-        }
-        
-        double availablePageSpace = Math.ceil((allCommentsList.size()/20.00));
-        
-        if (presenter.getCurrentPage() == availablePageSpace && availablePageSpace > 1) {
-            visibleItems = allCommentsList.subList(0, allCommentsList.size());
-            this.caseCommentList.setModel(visibleItems);
-        }
-        
-
+        presenter.loadMoreComments();
     }
 }
     
