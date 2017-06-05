@@ -44,7 +44,7 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
     User identity;
 
     boolean sortAsc = false;
-    int currentPage = 0;
+    int currentPage = 1;
 
     @WorkbenchPartTitle
     public String getTittle() {
@@ -107,7 +107,6 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
 
         void resetPagination();
         
-        void setVisibleItems(List<CaseCommentSummary> visibleItems);
 
     }
 
@@ -126,10 +125,9 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
     }
 
     public void loadMoreComments() {
-        // TODO Auto-generated method stub
+
         this.currentPage = currentPage + 1;
         
-        caseService.call().getComments(serverTemplateId, containerId, caseId, this.currentPage, 20);
     }
 
 }
