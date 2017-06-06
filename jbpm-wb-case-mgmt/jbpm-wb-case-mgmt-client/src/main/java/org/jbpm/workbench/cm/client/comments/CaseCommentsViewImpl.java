@@ -56,7 +56,7 @@ import static org.jbpm.workbench.cm.client.resources.i18n.Constants.*;
 public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
         implements CaseCommentsPresenter.CaseCommentsView {
     
-    private int PAGE_SIZE = 4;
+    private int PAGE_SIZE = 20;
     
     @Inject
     @DataField("load-div")
