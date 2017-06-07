@@ -45,6 +45,7 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
 
     boolean sortAsc = false;
     int currentPage = 1;
+    int pageSize = 20;
 
     @WorkbenchPartTitle
     public String getTittle() {
@@ -70,7 +71,7 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
                                     comparing(CaseCommentSummary::getAddedAt).reversed()))
                             .collect(toList()));
                 }
-        ).getComments(serverTemplateId, containerId, caseId);
+        ).getComments(serverTemplateId, containerId, caseId, currentPage, pageSize);
     }
 
     public void sortComments(final boolean sortAsc) {

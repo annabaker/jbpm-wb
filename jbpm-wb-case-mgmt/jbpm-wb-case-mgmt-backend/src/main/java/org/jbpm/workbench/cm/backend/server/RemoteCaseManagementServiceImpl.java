@@ -54,6 +54,8 @@ import org.kie.server.api.model.instance.NodeInstance;
 import org.kie.server.client.CaseServicesClient;
 import org.kie.server.client.UserTaskServicesClient;
 
+import com.google.common.collect.Lists;
+
 @Service
 @ApplicationScoped
 public class RemoteCaseManagementServiceImpl implements CaseManagementService {
@@ -158,8 +160,15 @@ public class RemoteCaseManagementServiceImpl implements CaseManagementService {
     @Override
     public List<CaseCommentSummary> getComments(final String serverTemplateId, final String containerId, final String caseId, int currentPage, int pageSize) {
 
-        final List<CaseComment> caseComments = client.getComments(containerId, caseId, currentPage, pageSize);
-        return caseComments.stream().map(new CaseCommentMapper()).collect(toList());
+        System.out.println("Current Page: " + currentPage);
+        System.out.println("Page Size: " + pageSize);
+        
+        final List<CaseComment> caseComments = client.getComments(containerId, caseId, 0, PAGE_SIZE_UNLIMITED);
+        
+        // temporary until client call is working as intended
+        List<List<CaseComment>> caseCommentPages = Lists.partition(caseComments, pageSize);
+        
+        return caseCommentPages.get(currentPage).stream().map(new CaseCommentMapper()).collect(toList());
     }
     
     @Override
