@@ -56,6 +56,7 @@ public class MockCaseManagementService extends RemoteCaseManagementServiceImpl {
     private static final Logger LOGGER = LoggerFactory.getLogger(MockCaseManagementService.class);
     private static final String CASE_DEFINITIONS_JSON = "case_definitions.json";
     private static final String CASE_MILESTONES_JSON = "case_milestones.json";
+    private static final String CASE_COMMENTS_JSON = "case_comments.json";
     private static final String CASE_STAGES_JSON = "case_stages.json";
     private static final String CASE_ACTIONS_JSON = "case_actions.json";
     private static final String PROCESS_DEFINITION_JSON = "process_definitions.json";
@@ -69,6 +70,7 @@ public class MockCaseManagementService extends RemoteCaseManagementServiceImpl {
     private List<CaseStageSummary> caseStageList = new ArrayList<>();
     private Map<String, List<CaseCommentSummary>> caseCommentMap = new HashMap<>();
     private List<CaseMilestoneSummary> caseMilestoneList = new ArrayList<>();
+    private List<CaseCommentSummary> caseCommentList = new ArrayList<>();
     private Map<String, List<CaseActionSummary>> caseActionMap = new HashMap<>();
     private List<CaseActionSummary> caseActionList = new ArrayList<>();
     private List<ProcessDefinitionSummary> processDefinitionList = emptyList();
@@ -78,6 +80,7 @@ public class MockCaseManagementService extends RemoteCaseManagementServiceImpl {
     public void init() {
             caseDefinitionList = readJsonValues(CaseDefinitionSummary.class, CASE_DEFINITIONS_JSON);
             caseMilestoneList = readJsonValues(CaseMilestoneSummary.class, CASE_MILESTONES_JSON);
+            caseCommentList = readJsonValues(CaseCommentSummary.class, CASE_COMMENTS_JSON);
             caseStageList = readJsonValues(CaseStageSummary.class, CASE_STAGES_JSON);
             caseActionList = readJsonValues(CaseActionSummary.class, CASE_ACTIONS_JSON);
             processDefinitionList = readJsonValues(ProcessDefinitionSummary.class, PROCESS_DEFINITION_JSON);
@@ -131,6 +134,12 @@ public class MockCaseManagementService extends RemoteCaseManagementServiceImpl {
         List<CaseActionSummary> actions = new ArrayList<>(caseActionList);
         caseActionMap.putIfAbsent(ci.getCaseId(), actions.stream().map(s -> {
             s.setCreatedOn(new Date());
+            return s;
+        }).collect(toList()));
+        
+        List<CaseCommentSummary> comments = new ArrayList<>(caseCommentList);
+        caseCommentMap.putIfAbsent(ci.getCaseId(), comments.stream().map(s -> {
+            s.setAddedAt(new Date());
             return s;
         }).collect(toList()));
 
