@@ -45,6 +45,19 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
 
     boolean sortAsc = false;
 
+    private int currentPage = 0;
+    private int pageSize = 20;
+
+    
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
     @WorkbenchPartTitle
     public String getTittle() {
         return translationService.format(CASE_COMMENTS);
@@ -69,7 +82,7 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
                                     comparing(CaseCommentSummary::getAddedAt).reversed()))
                             .collect(toList()));
                 }
-        ).getComments(serverTemplateId, containerId, caseId);
+        ).getComments(serverTemplateId, containerId, caseId, currentPage, pageSize);
     }
 
     public void sortComments(final boolean sortAsc) {
@@ -113,5 +126,29 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
         String label();
 
     }
+
+    public void setCurrentPage(int i) {
+        this.currentPage  = i;
+        
+    }
+
+    public int getCurrentPage() {
+        return this.currentPage;
+    }
+    
+    public void loadMoreCaseComments() {
+        this.currentPage = currentPage + 1;
+        caseService.call(
+                (List<CaseCommentSummary> comments) -> {
+                    view.setCaseCommentList(comments.stream()
+                            .sorted((sortAsc ?
+                                    comparing(CaseCommentSummary::getAddedAt) :
+                                    comparing(CaseCommentSummary::getAddedAt).reversed()))
+                            .collect(toList()));
+                }
+        ).getComments(serverTemplateId, containerId, caseId, currentPage, pageSize);
+        
+    }
+
 
 }

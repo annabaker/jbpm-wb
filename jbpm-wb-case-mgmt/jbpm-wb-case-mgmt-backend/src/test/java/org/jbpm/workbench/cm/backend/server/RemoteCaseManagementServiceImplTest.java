@@ -246,19 +246,35 @@ public class RemoteCaseManagementServiceImplTest {
 
     @Test
     public void testGetComments_bulkComments() {
-
+        int pageSize = 20;
         List<CaseComment> caseComments = new ArrayList<>();
 
         for (int i = 0; i < 55; i++) {
             final CaseComment caseComment = createTestComment();
             caseComments.add(caseComment);
         }
-
-        when(clientMock.getComments(containerId, caseId, 0, PAGE_SIZE_UNLIMITED)).thenReturn(caseComments);
-
-        final List<CaseCommentSummary> comments = testedService.getComments(serverTemplateId, containerId, caseId);
+        
+        List<CaseComment> firstPage = caseComments.subList(0, 20);
+        List<CaseComment> secondPage = caseComments.subList(20, 40);
+        List<CaseComment> thirdPage = caseComments.subList(40, 55);
+        
+        when(clientMock.getComments(containerId, caseId, 0, 20)).thenReturn(firstPage);
+        List<CaseCommentSummary> comments = testedService.getComments(serverTemplateId, containerId, caseId, 0, pageSize);
+        
         assertNotNull(comments);
-        assertEquals(1, comments.size());
+        assertEquals(20, comments.size());
+        
+        when(clientMock.getComments(containerId, caseId, 1, 20)).thenReturn(secondPage);
+        comments = testedService.getComments(serverTemplateId, containerId, caseId, 1, pageSize);
+        
+        assertNotNull(comments);
+        assertEquals(20, comments.size());
+        
+        when(clientMock.getComments(containerId, caseId, 2, 20)).thenReturn(thirdPage);
+        comments = testedService.getComments(serverTemplateId, containerId, caseId, 2, pageSize);
+        
+        assertNotNull(comments);
+        assertEquals(15, comments.size());       
     }
 
     @Test

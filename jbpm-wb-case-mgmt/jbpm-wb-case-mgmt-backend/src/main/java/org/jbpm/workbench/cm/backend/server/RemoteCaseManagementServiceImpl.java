@@ -249,4 +249,10 @@ public class RemoteCaseManagementServiceImpl implements CaseManagementService {
         final List<ProcessDefinition> processDefinitions = client.findProcessesByContainerId(containerId, 0, PAGE_SIZE_UNLIMITED);
         return processDefinitions.stream().map(new ProcessDefinitionMapper()).collect(toList());
     }
+
+    @Override
+    public List<CaseCommentSummary> getComments(String serverTemplateId, String containerId, String caseId, int page, int pageSize) {
+        final List<CaseComment> caseComments = client.getComments(containerId, caseId, page, pageSize);
+        return caseComments.stream().map(new CaseCommentMapper()).collect(toList());
+    }
 }
