@@ -51,13 +51,16 @@ import static org.jbpm.workbench.cm.client.resources.i18n.Constants.*;
 
 @Dependent
 @Templated
-public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
-        implements CaseCommentsPresenter.CaseCommentsView {
-    //private int PAGE_SIZE = 20;
+public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter> implements CaseCommentsPresenter.CaseCommentsView {
 
     @Inject
     @DataField("load-div")
     Div loadDiv;
+    
+    @Inject
+    @DataField("load-more-comments")
+    @SuppressWarnings("PMD.UnusedPrivateField")
+    private Button loadMoreComments;
 
     @Inject
     @DataField("comments")
@@ -70,11 +73,6 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
     @Inject
     @DataField("sort-alpha-desc")
     private Button sortAlphaDesc;
-    
-    @Inject
-    @DataField("load-more-comments")
-    @SuppressWarnings("PMD.UnusedPrivateField")
-    private Button loadMoreComments;
 
     @Inject
     @Bound
@@ -106,10 +104,9 @@ public class CaseCommentsViewImpl extends AbstractView<CaseCommentsPresenter>
     Anchor addCommentButton;
 
     @Inject
-private TranslationService translationService;
+    private TranslationService translationService;
 
     List<CaseCommentSummary> allCommentsList;
-    List<CaseCommentSummary> visibleComments;
 
     @PostConstruct
     public void init() {
@@ -143,7 +140,6 @@ private TranslationService translationService;
 
     @Override
     public void resetPagination() {
-        //pagination.setCurrentPage(0);
         presenter.setCurrentPage(0);
         onSortChange(sortAlphaAsc, sortAlphaDesc, false);
     }
@@ -153,8 +149,7 @@ private TranslationService translationService;
         
         allCommentsList = caseCommentList;
 
-        //pagination.init(allCommentsList, this, PAGE_SIZE);
-        setVisibleComments(false);
+        this.caseCommentList.setModel(allCommentsList);
 
         if (caseCommentList.isEmpty()) {
             removeCSSClass(emptyContainer, "hidden");
@@ -162,22 +157,10 @@ private TranslationService translationService;
             addCSSClass(emptyContainer, "hidden");
         }
     }
-
-    //@Override
-    //public Div getScrollBox() {
-        //return scrollbox;
-    //}
-
     
-    public void setVisibleComments(boolean doLoadMore) {
-        
-        //visibleComments = allCommentsList.subList(0, 20);
-        
-        //loadDiv.setHidden(!canLoadMorePages);
-        
-        visibleComments = allCommentsList;
-
-        this.caseCommentList.setModel(visibleComments);
+    @Override
+    public void hideLoadButton() {        
+        loadDiv.setHidden(true);
     }
 
     @EventHandler("addCommentButton")
@@ -224,8 +207,6 @@ private TranslationService translationService;
     @EventHandler("load-more-comments")
     public void loadMoreComments(final @ForEvent("click") MouseEvent event) {
         presenter.loadMoreCaseComments();
-        //setVisibleComments(true);                
-
     }
 
 

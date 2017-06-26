@@ -17,6 +17,7 @@
 package org.jbpm.workbench.cm.client.comments;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -48,14 +49,19 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
     private int currentPage = 0;
     private int pageSize = 20;
 
+    List<CaseCommentSummary> visibleComments = new ArrayList<CaseCommentSummary>();
     
     public int getPageSize() {
         return pageSize;
     }
-
     
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
+    public void setCurrentPage(int i) {
+        this.currentPage  = i;
+        
+    }
+
+    public int getCurrentPage() {
+        return this.currentPage;
     }
 
     @WorkbenchPartTitle
@@ -71,18 +77,32 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
     protected void loadCaseInstance(final CaseInstanceSummary cis) {
         refreshComments();
     }
-
-    public void refreshComments() {
-        view.clearCommentInputForm();
+    
+    private void commentsServiceCall(int currentPage) {
         caseService.call(
                 (List<CaseCommentSummary> comments) -> {
-                    view.setCaseCommentList(comments.stream()
+                    visibleComments.addAll(comments);
+                    if (visibleComments.size() < pageSize) {
+                        view.hideLoadButton();
+                    }
+                    view.setCaseCommentList(visibleComments.stream()
                             .sorted((sortAsc ?
                                     comparing(CaseCommentSummary::getAddedAt) :
                                     comparing(CaseCommentSummary::getAddedAt).reversed()))
                             .collect(toList()));
                 }
         ).getComments(serverTemplateId, containerId, caseId, currentPage, pageSize);
+    }
+
+    public void refreshComments() {
+        view.clearCommentInputForm();
+        visibleComments.clear();
+        commentsServiceCall(currentPage);
+    }
+    
+    public void loadMoreCaseComments() {
+        this.currentPage = currentPage + 1;
+        commentsServiceCall(currentPage);       
     }
 
     public void sortComments(final boolean sortAsc) {
@@ -110,7 +130,6 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
         ).removeComment(serverTemplateId, containerId, caseId, caseCommentSummary.getId());
     }
 
-
     public interface CaseCommentsView extends UberElement<CaseCommentsPresenter> {
 
         void clearCommentInputForm();
@@ -118,6 +137,8 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
         void setCaseCommentList(List<CaseCommentSummary> caseCommentList);
 
         void resetPagination();
+        
+        void hideLoadButton();
 
     }
 
@@ -126,29 +147,5 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
         String label();
 
     }
-
-    public void setCurrentPage(int i) {
-        this.currentPage  = i;
-        
-    }
-
-    public int getCurrentPage() {
-        return this.currentPage;
-    }
     
-    public void loadMoreCaseComments() {
-        this.currentPage = currentPage + 1;
-        caseService.call(
-                (List<CaseCommentSummary> comments) -> {
-                    view.setCaseCommentList(comments.stream()
-                            .sorted((sortAsc ?
-                                    comparing(CaseCommentSummary::getAddedAt) :
-                                    comparing(CaseCommentSummary::getAddedAt).reversed()))
-                            .collect(toList()));
-                }
-        ).getComments(serverTemplateId, containerId, caseId, currentPage, pageSize);
-        
-    }
-
-
 }
