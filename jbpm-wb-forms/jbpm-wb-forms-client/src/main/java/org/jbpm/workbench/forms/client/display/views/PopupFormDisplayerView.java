@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtbootstrap3.client.ui.ModalSize;
 import org.jbpm.workbench.forms.client.display.GenericFormDisplayer;
 import org.jbpm.workbench.forms.display.view.FormContentResizeListener;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -71,6 +72,7 @@ public class PopupFormDisplayerView extends BaseModal implements FormDisplayerVi
                 }
             }
         };
+        setSize(ModalSize.LARGE);
         setBody( body );
         add( footer );
         this.addHiddenHandler( new ModalHiddenHandler() {
