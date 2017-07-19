@@ -16,14 +16,19 @@
 
 package org.jbpm.workbench.forms.client.display.views;
 
+//import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtbootstrap3.client.ui.ModalSize;
 import org.jbpm.workbench.forms.client.display.GenericFormDisplayer;
 import org.jbpm.workbench.forms.display.view.FormContentResizeListener;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -31,6 +36,8 @@ import org.uberfire.mvp.Command;
 
 @Dependent
 public class PopupFormDisplayerView extends BaseModal implements FormDisplayerView {
+    
+    Logger logger = Logger.getLogger("PopupFormDisplayerView");
 
     private Command onCloseCommand;
 
@@ -69,8 +76,12 @@ public class PopupFormDisplayerView extends BaseModal implements FormDisplayerVi
                 } else if (initialWidth != -1) {
                     setWidth(initialWidth + "px");
                 }
+                //addStyleName(Style.Overflow.AUTO.getCssName());
             }
         };
+        
+        getElement().getStyle().setOverflow(Overflow.AUTO);
+        setSize(ModalSize.LARGE);
         setBody(body);
         add(footer);
         this.addHiddenHandler(new ModalHiddenHandler() {
@@ -129,4 +140,5 @@ public class PopupFormDisplayerView extends BaseModal implements FormDisplayerVi
     public GenericFormDisplayer getCurrentDisplayer() {
         return currentDisplayer;
     }
+    
 }
