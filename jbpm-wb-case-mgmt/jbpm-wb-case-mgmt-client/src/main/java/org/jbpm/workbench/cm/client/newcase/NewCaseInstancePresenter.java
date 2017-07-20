@@ -59,6 +59,10 @@ public class NewCaseInstancePresenter extends AbstractPresenter<NewCaseInstanceP
 
     @Inject
     private User identity;
+    
+    int currentPage = 0;
+    
+    public static final int PAGE_SIZE = 20;
 
     protected void loadCaseRoles(final String caseDefinitionId) {
         view.clearRoles();
@@ -91,7 +95,7 @@ public class NewCaseInstancePresenter extends AbstractPresenter<NewCaseInstanceP
                     view.setCaseDefinitions(caseDefinitions);
                     view.setOwner(identity.getIdentifier());
                 }
-        ).getCaseDefinitions();
+        ).getCaseDefinitions(currentPage, PAGE_SIZE);
     }
 
     protected void createCaseInstance(final String caseDefinitionId,

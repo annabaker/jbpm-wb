@@ -37,8 +37,6 @@ public interface CaseManagementService {
                                             String containerId,
                                             String caseDefinitionId);
 
-    List<CaseDefinitionSummary> getCaseDefinitions();
-
     String startCaseInstance(String serverTemplateId,
                              String containerId,
                              String caseDefinitionId,
@@ -156,4 +154,6 @@ public interface CaseManagementService {
                             Map<String, Object> data);
 
     List<ProcessDefinitionSummary> getProcessDefinitions(String containerId);
+
+    List<CaseDefinitionSummary> getCaseDefinitions(Integer page, Integer pageSize);
 }

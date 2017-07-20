@@ -70,9 +70,9 @@ public class RemoteCaseManagementServiceImpl implements CaseManagementService {
     private UserTaskServicesClient userTaskServicesClient;
 
     @Override
-    public List<CaseDefinitionSummary> getCaseDefinitions() {
-        final List<CaseDefinition> caseDefinitions = client.getCaseDefinitions(0,
-                                                                               PAGE_SIZE_UNLIMITED,
+    public List<CaseDefinitionSummary> getCaseDefinitions(Integer page, Integer pageSize) {
+        final List<CaseDefinition> caseDefinitions = client.getCaseDefinitions(page,
+                                                                               pageSize,
                                                                                CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME,
                                                                                true);
         return caseDefinitions.stream().map(new CaseDefinitionMapper()).collect(toList());
@@ -441,4 +441,5 @@ public class RemoteCaseManagementServiceImpl implements CaseManagementService {
                                                                                              PAGE_SIZE_UNLIMITED);
         return processDefinitions.stream().map(new ProcessDefinitionMapper()).collect(toList());
     }
+
 }

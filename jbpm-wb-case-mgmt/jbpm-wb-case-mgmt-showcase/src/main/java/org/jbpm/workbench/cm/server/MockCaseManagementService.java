@@ -114,7 +114,7 @@ public class MockCaseManagementService extends RemoteCaseManagementServiceImpl {
     }
 
     @Override
-    public List<CaseDefinitionSummary> getCaseDefinitions() {
+    public List<CaseDefinitionSummary> getCaseDefinitions(Integer page, Integer pageSize) {
         return caseDefinitionList;
     }
 

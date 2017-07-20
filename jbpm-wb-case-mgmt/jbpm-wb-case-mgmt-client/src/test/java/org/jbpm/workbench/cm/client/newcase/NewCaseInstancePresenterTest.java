@@ -99,7 +99,7 @@ public class NewCaseInstancePresenterTest {
     @Test
     public void testCreateCaseInstance() {
         final CaseDefinitionSummary cds = CaseDefinitionSummary.builder().id("id").name("name").containerId("containerId").build();
-        when(caseManagementService.getCaseDefinitions()).thenReturn(Arrays.asList(cds));
+        when(caseManagementService.getCaseDefinitions(0, 20)).thenReturn(Arrays.asList(cds));
         final String owner = "userx";
         when(identity.getIdentifier()).thenReturn(owner);
         when(caseRolesValidations.validateRolesAssignments(any(CaseDefinitionSummary.class),

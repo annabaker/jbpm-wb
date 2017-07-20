@@ -90,19 +90,66 @@ public class RemoteCaseManagementServiceImplTest {
 
     @Test
     public void testGetCaseDefinitions_singleCaseDefinition() {
+        
+        int pageSize = 20;
+        
         final CaseDefinition definition = createTestDefinition();
-        when(clientMock.getCaseDefinitions(anyInt(),
-                                           anyInt(),
-                                           eq(CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME),
-                                           eq(true)))
+        when(clientMock.getCaseDefinitions(0,
+                                           20,
+                                           CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME,
+                                           true))
                 .thenReturn(singletonList(definition));
 
-        List<CaseDefinitionSummary> definitions = testedService.getCaseDefinitions();
-        assertNotNull(definitions);
+        List<CaseDefinitionSummary> definitions = testedService.getCaseDefinitions(0, pageSize);
+        //assertNotNull(definitions);
         assertEquals(1,
                      definitions.size());
         assertCaseDefinition(definition,
                              definitions.get(0));
+    }
+ 
+    @Test
+    public void testGetCaseDefinitions_bulkCaseDefinitions() {
+        
+        int pageSize = 20;
+        List<CaseDefinition> caseDefinitions = new ArrayList<CaseDefinition>();
+        
+        for (int i = 0; i < 55; i++) {
+            final CaseDefinition caseDefinition = createTestDefinition();
+            caseDefinitions.add(caseDefinition);
+        }
+        
+        List<CaseDefinition> firstPage = caseDefinitions.subList(0, 20);
+        List<CaseDefinition> secondPage = caseDefinitions.subList(20, 40);
+        List<CaseDefinition> thirdPage = caseDefinitions.subList(40, 55);
+        
+        when(clientMock.getCaseDefinitions(0, 
+                                           pageSize, 
+                                           CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME, 
+                                           true))
+                .thenReturn(firstPage);       
+        List<CaseDefinitionSummary> firstPageReturned = testedService.getCaseDefinitions(0, pageSize);
+        assertNotNull(firstPageReturned);
+        assertEquals(20, firstPageReturned.size());
+        
+        when(clientMock.getCaseDefinitions(1, 
+                                           pageSize, 
+                                           CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME, 
+                                           true))
+                .thenReturn(secondPage);
+        List<CaseDefinitionSummary> secondPageReturned = testedService.getCaseDefinitions(1, pageSize);
+        assertNotNull(secondPageReturned);
+        assertEquals(20, secondPageReturned.size());
+
+        when(clientMock.getCaseDefinitions(2, 
+                                           pageSize, 
+                                           CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME, 
+                                           true))
+                .thenReturn(secondPage);
+        List<CaseDefinitionSummary> thirdPageReturned = testedService.getCaseDefinitions(2, pageSize);
+        assertNotNull(thirdPageReturned);
+        assertEquals(15, thirdPageReturned.size());
+ 
     }
 
     @Test
@@ -111,7 +158,7 @@ public class RemoteCaseManagementServiceImplTest {
                                            anyInt()))
                 .thenReturn(emptyList());
 
-        List<CaseDefinitionSummary> definitions = testedService.getCaseDefinitions();
+        List<CaseDefinitionSummary> definitions = testedService.getCaseDefinitions(0, 20);
         assertNotNull(definitions);
         assertTrue(definitions.isEmpty());
     }
