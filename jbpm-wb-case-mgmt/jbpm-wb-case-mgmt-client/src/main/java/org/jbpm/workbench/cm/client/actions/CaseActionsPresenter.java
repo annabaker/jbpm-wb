@@ -83,7 +83,7 @@ public class CaseActionsPresenter extends AbstractCaseInstancePresenter<CaseActi
                     Collections.sort(processDefinitionNames);
                     newActionView.setProcessDefinitions(processDefinitionNames);
                 }
-        ).getProcessDefinitions(containerId);
+        ).getProcessDefinitions(containerId, 0, 20);
         refreshData(true);
     }
 
@@ -189,7 +189,7 @@ public class CaseActionsPresenter extends AbstractCaseInstancePresenter<CaseActi
         }).getCaseActions(serverTemplateId,
                           containerId,
                           caseId,
-                          identity.getIdentifier());
+                          identity.getIdentifier(), null, null);
     }
 
     public interface CaseActionsView extends UberElement<CaseActionsPresenter> {

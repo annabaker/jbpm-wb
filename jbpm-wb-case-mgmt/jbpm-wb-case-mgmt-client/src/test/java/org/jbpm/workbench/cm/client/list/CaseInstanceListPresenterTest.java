@@ -70,7 +70,7 @@ public class CaseInstanceListPresenterTest {
     @Before
     public void init() {
         caseService = new CallerMock<>(caseManagementService);
-        when(caseManagementService.getCaseInstances(any(CaseInstanceSearchRequest.class))).thenReturn(caseInstanceSummaryList);
+        when(caseManagementService.getCaseInstances(any(CaseInstanceSearchRequest.class), 0, 20)).thenReturn(caseInstanceSummaryList);
         presenter.setCaseService(caseService);
         when(view.getCaseInstanceSearchRequest()).thenReturn(new CaseInstanceSearchRequest());
     }
@@ -84,7 +84,7 @@ public class CaseInstanceListPresenterTest {
         verify(caseManagementService).cancelCaseInstance(null,
                                                          cis.getContainerId(),
                                                          cis.getCaseId());
-        verify(caseManagementService).getCaseInstances(any(CaseInstanceSearchRequest.class));
+        verify(caseManagementService).getCaseInstances(any(CaseInstanceSearchRequest.class), 0, 20);
         final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
         verify(view).setCaseInstanceList(captor.capture());
         assertEquals(caseInstanceSummaryList.size(),
@@ -100,7 +100,7 @@ public class CaseInstanceListPresenterTest {
         verify(caseManagementService).destroyCaseInstance(null,
                                                           cis.getContainerId(),
                                                           cis.getCaseId());
-        verify(caseManagementService).getCaseInstances(any(CaseInstanceSearchRequest.class));
+        verify(caseManagementService).getCaseInstances(any(CaseInstanceSearchRequest.class), 0, 20);
         final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
         verify(view).setCaseInstanceList(captor.capture());
         assertEquals(caseInstanceSummaryList.size(),
@@ -111,7 +111,7 @@ public class CaseInstanceListPresenterTest {
     public void testRefreshData() {
         presenter.refreshData();
 
-        verify(caseManagementService).getCaseInstances(view.getCaseInstanceSearchRequest());
+        verify(caseManagementService).getCaseInstances(view.getCaseInstanceSearchRequest(), 0, 20);
         final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
         verify(view).setCaseInstanceList(captor.capture());
         assertEquals(caseInstanceSummaryList.size(),

@@ -96,7 +96,7 @@ public class ActionsPresenterTest extends AbstractCaseInstancePresenterTest {
         when(caseManagementService.getCaseActions(anyString(),
                                                   anyString(),
                                                   anyString(),
-                                                  anyString())).thenReturn(actions);
+                                                  anyString(), null, null)).thenReturn(actions);
 
         when(actions.getAvailableActions()).thenReturn(caseActionSummaryList);
         when(actions.getInProgressAction()).thenReturn(caseActionSummaryList);
@@ -107,14 +107,14 @@ public class ActionsPresenterTest extends AbstractCaseInstancePresenterTest {
     public void testLoadCaseInstance() {
         String subProcessName = "Subprocess1";
         List<ProcessDefinitionSummary> pdsl = Arrays.asList(ProcessDefinitionSummary.builder().id("processId").name(subProcessName).build());
-        when(caseManagementService.getProcessDefinitions(containerId)).thenReturn(pdsl);
+        when(caseManagementService.getProcessDefinitions(containerId, 0, 20)).thenReturn(pdsl);
 
         setupCaseInstance(cis,
                           serverTemplateId);
         verify(caseManagementService).getCaseActions(serverTemplateId,
                                                      containerId,
                                                      caseId,
-                                                     identity.getIdentifier());
+                                                     identity.getIdentifier(), null, null);
 
         final ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
 
@@ -135,7 +135,7 @@ public class ActionsPresenterTest extends AbstractCaseInstancePresenterTest {
                times(2)).setCaseStagesList(cis.getStages());
         final ArgumentCaptor<List> captor2 = ArgumentCaptor.forClass(List.class);
 
-        verify(caseManagementService).getProcessDefinitions(containerId);
+        verify(caseManagementService).getProcessDefinitions(containerId, 0, 20);
         verify(newActionViewMock).setProcessDefinitions(captor.capture());
         assertEquals(subProcessName,
                      captor.getValue().get(0));

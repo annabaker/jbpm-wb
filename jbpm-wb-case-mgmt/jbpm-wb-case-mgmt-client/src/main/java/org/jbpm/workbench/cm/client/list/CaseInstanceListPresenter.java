@@ -78,7 +78,7 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
     protected void refreshData() {
         caseService.call((List<CaseInstanceSummary> cases) -> {
             view.setCaseInstanceList(cases);
-        }).getCaseInstances(view.getCaseInstanceSearchRequest());
+        }).getCaseInstances(view.getCaseInstanceSearchRequest(), 0, 20);
     }
 
     protected void selectCaseInstance(final CaseInstanceSummary cis) {

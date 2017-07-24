@@ -157,7 +157,7 @@ public class MockCaseManagementService extends RemoteCaseManagementServiceImpl {
     }
 
     @Override
-    public List<CaseInstanceSummary> getCaseInstances(final CaseInstanceSearchRequest request) {
+    public List<CaseInstanceSummary> getCaseInstances(final CaseInstanceSearchRequest request, Integer page, Integer pageSize) {
         return caseInstanceList.stream()
                 .filter(c -> c.getStatus().equals(request.getStatus()))
                 .sorted(getCaseInstanceSummaryComparator(request))
@@ -315,7 +315,7 @@ public class MockCaseManagementService extends RemoteCaseManagementServiceImpl {
     @Override
     public List<CaseMilestoneSummary> getCaseMilestones(final String containerId,
                                                         final String caseId,
-                                                        final CaseMilestoneSearchRequest request) {
+                                                        final CaseMilestoneSearchRequest request, Integer page, Integer pageSize) {
         return caseMilestoneList.stream()
                 .sorted(getCaseMilestoneSummaryComparator(request))
                 .collect(toList());
@@ -328,13 +328,13 @@ public class MockCaseManagementService extends RemoteCaseManagementServiceImpl {
     }
 
     public List<CaseActionSummary> getInProgressActions(String containerId,
-                                                        String caseId) {
+                                                        String caseId, Integer page, Integer pageSize) {
         return ofNullable(caseActionMap.get(caseId)).orElse(emptyList()).stream()
                 .filter(c -> CaseActionStatus.IN_PROGRESS == c.getActionStatus()).collect(toList());
     }
 
     public List<CaseActionSummary> getCompletedActions(String containerId,
-                                                       String caseId) {
+                                                       String caseId, Integer page, Integer pageSize) {
         return ofNullable(caseActionMap.get(caseId)).orElse(emptyList()).stream()
                 .filter(c -> CaseActionStatus.COMPLETED == c.getActionStatus()).collect(toList());
     }
@@ -460,7 +460,7 @@ public class MockCaseManagementService extends RemoteCaseManagementServiceImpl {
     }
 
     @Override
-    public List<ProcessDefinitionSummary> getProcessDefinitions(String containerId) {
+    public List<ProcessDefinitionSummary> getProcessDefinitions(String containerId, Integer page, Integer pageSize) {
         return processDefinitionList;
     }
 }

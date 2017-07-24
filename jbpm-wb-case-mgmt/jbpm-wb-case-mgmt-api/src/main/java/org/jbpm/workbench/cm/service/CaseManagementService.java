@@ -43,7 +43,7 @@ public interface CaseManagementService {
                              String owner,
                              List<CaseRoleAssignmentSummary> roleAssignments);
 
-    List<CaseInstanceSummary> getCaseInstances(CaseInstanceSearchRequest request);
+    List<CaseInstanceSummary> getCaseInstances(CaseInstanceSearchRequest request, Integer page, Integer pageSize);
 
     CaseInstanceSummary getCaseInstance(String serverTemplateId,
                                         String containerId,
@@ -107,12 +107,12 @@ public interface CaseManagementService {
 
     List<CaseMilestoneSummary> getCaseMilestones(final String containerId,
                                                  final String caseId,
-                                                 final CaseMilestoneSearchRequest request);
+                                                 final CaseMilestoneSearchRequest request, Integer page, Integer pageSize);
 
     Actions getCaseActions(String templateId,
                            String container,
                            String caseId,
-                           String userId);
+                           String userId, Integer page, Integer pageSize);
 
     void addDynamicUserTask(String containerId,
                             String caseId,
@@ -153,7 +153,7 @@ public interface CaseManagementService {
                             String adHocName,
                             Map<String, Object> data);
 
-    List<ProcessDefinitionSummary> getProcessDefinitions(String containerId);
+    List<ProcessDefinitionSummary> getProcessDefinitions(String containerId, Integer page, Integer pageSize);
 
     List<CaseDefinitionSummary> getCaseDefinitions(Integer page, Integer pageSize);
 }

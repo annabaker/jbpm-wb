@@ -60,7 +60,7 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
             view.setCaseMilestoneList(milestones);
         }).getCaseMilestones(containerId,
                              caseId,
-                             view.getCaseMilestoneSearchRequest());
+                             view.getCaseMilestoneSearchRequest(), 0, 20);
     }
 
     public interface CaseMilestoneListView extends UberElement<CaseMilestoneListPresenter> {
