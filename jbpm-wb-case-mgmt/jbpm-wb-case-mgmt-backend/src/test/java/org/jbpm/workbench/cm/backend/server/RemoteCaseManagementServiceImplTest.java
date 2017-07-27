@@ -114,49 +114,6 @@ public class RemoteCaseManagementServiceImplTest {
                              definitions.get(0));
     }
  
-    @Test
-    public void testGetCaseDefinitions_bulkCaseDefinitions() {
-        
-        int pageSize = 20;
-        List<CaseDefinition> caseDefinitions = new ArrayList<CaseDefinition>();
-        
-        for (int i = 0; i < 55; i++) {
-            final CaseDefinition caseDefinition = createTestDefinition();
-            caseDefinitions.add(caseDefinition);
-        }
-        
-        List<CaseDefinition> expectedFirstPage = caseDefinitions.subList(0, 20);
-        List<CaseDefinition> expectedSecondPage = caseDefinitions.subList(20, 40);
-        List<CaseDefinition> expectedThirdPage = caseDefinitions.subList(40, 55);
-        
-        when(clientMock.getCaseDefinitions(0, 
-                                           pageSize, 
-                                           CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME, 
-                                           true))
-                .thenReturn(expectedFirstPage);       
-        List<CaseDefinitionSummary> actualFirstPage = testedService.getCaseDefinitions(0, pageSize);
-        assertNotNull(actualFirstPage);
-        assertEquals(expectedFirstPage.size(), actualFirstPage.size());
-        
-        when(clientMock.getCaseDefinitions(1, 
-                                           pageSize, 
-                                           CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME, 
-                                           true))
-                .thenReturn(expectedSecondPage);
-        List<CaseDefinitionSummary> actualSecondPage = testedService.getCaseDefinitions(1, pageSize);
-        assertNotNull(actualSecondPage);
-        assertEquals(expectedSecondPage.size(), actualSecondPage.size());
-
-        when(clientMock.getCaseDefinitions(2, 
-                                           pageSize, 
-                                           CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME, 
-                                           true))
-                .thenReturn(expectedThirdPage);
-        List<CaseDefinitionSummary> actualThirdPage = testedService.getCaseDefinitions(2, pageSize);
-        assertNotNull(actualThirdPage);
-        assertEquals(expectedThirdPage.size(), actualThirdPage.size());
- 
-    }
 
     @Test
     public void testGetCaseDefinitions_emptyList() {
@@ -195,41 +152,6 @@ public class RemoteCaseManagementServiceImplTest {
         assertNull(shouldBeNull);
     }
     
-    @Test
-    public void getCaseInstances_bulkCaseInstances() {
-        int pageSize = 20;
-        
-        final CaseInstanceSearchRequest request = new CaseInstanceSearchRequest();
-        
-        List<CaseInstance> caseInstances = new ArrayList<CaseInstance>();
-        
-        for (int i = 0 ; i < 55 ; i++) {
-            caseInstances.add(createTestInstance(caseId));
-        }
-        
-        List<CaseInstance> firstPage = caseInstances.subList(0, 20);
-        List<CaseInstance> secondPage = caseInstances.subList(20, 40);
-        List<CaseInstance> thirdPage = caseInstances.subList(40, 55);
-        
-
-        when(clientMock.getCaseInstances(singletonList(request.getStatus().getName()),
-                                         0,
-                                         pageSize)).thenReturn(firstPage);
-        List<CaseInstanceSummary> firstPageReturned = testedService.getCaseInstances(request, 0, pageSize);
-        assertEquals(20, firstPageReturned.size());
-        
-        when(clientMock.getCaseInstances(singletonList(request.getStatus().getName()),
-                                         1,
-                                         pageSize)).thenReturn(secondPage);
-        List<CaseInstanceSummary> secondPageReturned = testedService.getCaseInstances(request, 1, pageSize);
-        assertEquals(20, secondPageReturned.size());
-        
-        when(clientMock.getCaseInstances(singletonList(request.getStatus().getName()),
-                2,
-                pageSize)).thenReturn(thirdPage);
-        List<CaseInstanceSummary> thirdPageReturned = testedService.getCaseInstances(request, 2, pageSize);
-        assertEquals(15, thirdPageReturned.size());       
-    }
 
     @Test
     public void getCaseInstances_singleCaseInstance() {
@@ -407,62 +329,6 @@ public class RemoteCaseManagementServiceImplTest {
                           comments.get(0));
     }
 
-    @Test
-    public void testGetComments_bulkComments() {
-        int pageSize = 20;
-        List<CaseComment> caseComments = new ArrayList<>();
-
-        for (int i = 0; i < 55; i++) {
-            final CaseComment caseComment = createTestComment();
-            caseComments.add(caseComment);
-        }
-        
-        List<CaseComment> firstPage = caseComments.subList(0, 20);
-        List<CaseComment> secondPage = caseComments.subList(20, 40);
-        List<CaseComment> thirdPage = caseComments.subList(40, 55);
-        
-        when(clientMock.getComments(containerId, 
-                                    caseId, 
-                                    0, 
-                                    20)).thenReturn(firstPage);
-        
-        List<CaseCommentSummary> comments = testedService.getComments(serverTemplateId, 
-                                                                      containerId, 
-                                                                      caseId, 
-                                                                      0, 
-                                                                      pageSize);
-        
-        assertNotNull(comments);
-        assertEquals(20, comments.size());
-        
-        when(clientMock.getComments(containerId, 
-                                    caseId, 
-                                    1, 
-                                    20)).thenReturn(secondPage);
-        
-        comments = testedService.getComments(serverTemplateId, 
-                                             containerId, 
-                                             caseId, 
-                                             1, 
-                                             pageSize);
-        
-        assertNotNull(comments);
-        assertEquals(20, comments.size());
-        
-        when(clientMock.getComments(containerId, 
-                                    caseId, 
-                                    2, 
-                                    20)).thenReturn(thirdPage);
-        
-        comments = testedService.getComments(serverTemplateId, 
-                                             containerId, 
-                                             caseId, 
-                                             2, 
-                                             pageSize);
-        
-        assertNotNull(comments);
-        assertEquals(15, comments.size());       
-    }
 
     @Test
     public void testGetComments_emptyList() {
@@ -576,34 +442,6 @@ public class RemoteCaseManagementServiceImplTest {
                      sortedMilestones.get(1).getIdentifier());
         assertEquals("id3",
                      sortedMilestones.get(2).getIdentifier());
-    }
-    
-    @Test
-    public void getCaseMilestones_bulkMilestones() {
-        int pageSize = 20;
-        
-        List<CaseMilestone> caseMilestones = new ArrayList<CaseMilestone>();
-       
-        for (int i = 0 ; i < 55 ; i++) {
-            caseMilestones.add(createTestMilestone("id" + i, "milestone" + i, "Available"));
-        }
-        
-        List<CaseMilestone> expectedFirstPage = caseMilestones.subList(0, 20);
-        List<CaseMilestone> expectedSecondPage = caseMilestones.subList(20, 40);
-        List<CaseMilestone> expectedThirdPage = caseMilestones.subList(40, 55);
-        
-        
-        when(clientMock.getMilestones(containerId, caseId, false, 0, pageSize)).thenReturn(expectedFirstPage);        
-        List<CaseMilestoneSummary> actualFirstPage = testedService.getCaseMilestones(containerId, caseId, new CaseMilestoneSearchRequest(), 0, pageSize);
-        assertEquals(expectedFirstPage.size(), actualFirstPage.size());
-        
-        when(clientMock.getMilestones(containerId, caseId, false, 1, pageSize)).thenReturn(expectedSecondPage);        
-        List<CaseMilestoneSummary> actualSecondPage = testedService.getCaseMilestones(containerId, caseId, new CaseMilestoneSearchRequest(), 1, pageSize);
-        assertEquals(expectedSecondPage.size(), actualSecondPage.size());
-        
-        when(clientMock.getMilestones(containerId, caseId, false, 2, pageSize)).thenReturn(expectedThirdPage);        
-        List<CaseMilestoneSummary> actualThirdPage = testedService.getCaseMilestones(containerId, caseId, new CaseMilestoneSearchRequest(), 2, pageSize);
-        assertEquals(expectedThirdPage.size(), actualThirdPage.size());
     }
 
     private CaseDefinition createTestDefinition() {
@@ -819,128 +657,6 @@ public class RemoteCaseManagementServiceImplTest {
     }
     
     @Test
-    public void testGetCaseActions_bulkActions() {
-        final CaseInstance ci = createTestInstance(caseId);
-        CaseStage stage1 = createTestCaseStage("stage1",
-                                               "stage1-name",
-                                               CaseStageStatus.ACTIVE.getStatus());
-        CaseAdHocFragment cAHF1_stage1 = createTestCaseAdHocFragment("stage1-adHoc-1",
-                                                                     "adHocFragment-type-1");
-        CaseAdHocFragment cAHF2_stage1 = createTestCaseAdHocFragment("stage1-adHoc-2",
-                                                                     "adHocFragment-type-2");
-
-        CaseStage stage2 = createTestCaseStage("stage2",
-                                               "stage2-name",
-                                               CaseStageStatus.COMPLETED.getStatus());
-        CaseAdHocFragment cAHF1_stage2 = createTestCaseAdHocFragment("stage2-adHoc-1",
-                                                                     "adHocFragment-type-1");
-        CaseAdHocFragment cAHF2_stage2 = createTestCaseAdHocFragment("stage2-adHoc-2",
-                                                                     "adHocFragment-type-2");
-
-        stage1.setAdHocFragments(Arrays.asList(cAHF1_stage1,
-                                               cAHF2_stage1));
-        stage2.setAdHocFragments(Arrays.asList(cAHF1_stage2,
-                                               cAHF2_stage2));
-        ci.setStages(Arrays.asList(stage1,
-                                   stage2));
-
-        when(clientMock.getCaseInstance(ci.getContainerId(),
-                                        ci.getCaseId(),
-                                        true,
-                                        true,
-                                        true,
-                                        true))
-                .thenReturn(ci);
-
-        CaseAdHocFragment cAHF1 = createTestCaseAdHocFragment("adHocFragment-name-1",
-                                                              "adHocFragment-type-1");
-        CaseAdHocFragment cAHF2 = createTestCaseAdHocFragment("adHocFragment-name-2",
-                                                              "adHocFragment-type-2");
-        when(clientMock.getAdHocFragments(containerId,
-                                          caseId)).thenReturn(Arrays.asList(cAHF1,
-                                                                            cAHF2));
-
-        Long node1WorkItemId = 1L;
-        Long node2WorkItemId = 2L;
-        NodeInstance node1 = createTestNodeInstance("active1",
-                                                   "Human Task",
-                                                   node1WorkItemId);
-        NodeInstance node2 = createTestNodeInstance("active2",
-                                                   "Service Task",
-                                                   node2WorkItemId);
-        when(clientMock.getActiveNodes(eq(containerId),
-                                       eq(caseId),
-                                       eq(0),
-                                       eq(20))).thenReturn(Arrays.asList(node1,
-                                                                           node2));
-
-        Long node3WorkItemId = 3L;
-        Long node4WorkItemId = 4L;
-        NodeInstance node3 = createTestNodeInstance("complete1",
-                                                   "Human Task",
-                                                   node3WorkItemId);
-        NodeInstance node4 = createTestNodeInstance("complete2",
-                                                   "Service Task",
-                                                   node4WorkItemId);
-        when(clientMock.getCompletedNodes(eq(containerId),
-                                          eq(caseId),
-                                          eq(0),
-                                          eq(20))).thenReturn(Arrays.asList(node3,
-                                                                              node4));
-
-        TaskInstance t1 = TaskInstance.builder()
-                .actualOwner("Koe")
-                .build();
-        when(userTaskServicesClient.findTaskByWorkItemId(node1WorkItemId)).thenReturn(t1);
-        when(userTaskServicesClient.findTaskByWorkItemId(node3WorkItemId)).thenReturn(t1);
-
-        Actions actions = testedService.getCaseActions(serverTemplateId,
-                                                       containerId,
-                                                       caseId,
-                                                       userId, 0, 20);
-
-        assertEquals(4,
-                     actions.getAvailableActions().size());
-        CaseActionMapperTest.assertCaseActionAdHocFragment(cAHF1,
-                                                           actions.getAvailableActions().get(0));
-        CaseActionMapperTest.assertCaseActionAdHocFragment(cAHF2,
-                                                           actions.getAvailableActions().get(1));
-        CaseActionMapperTest.assertCaseActionAdHocFragment(cAHF1_stage1,
-                                                           actions.getAvailableActions().get(2));
-        CaseActionMapperTest.assertCaseActionAdHocFragment(cAHF2_stage1,
-                                                           actions.getAvailableActions().get(3));
-
-        assertEquals(2,
-                     actions.getInProgressAction().size());
-        CaseActionMapperTest.assertCaseActionNodeInstance(node1,
-                                                          actions.getInProgressAction().get(0));
-        CaseActionMapperTest.assertCaseActionNodeInstance(node2,
-                                                          actions.getInProgressAction().get(1));
-
-        assertEquals(2,
-                     actions.getCompleteActions().size());
-        CaseActionMapperTest.assertCaseActionNodeInstance(node3,
-                                                          actions.getCompleteActions().get(0));
-        CaseActionMapperTest.assertCaseActionNodeInstance(node4,
-                                                          actions.getCompleteActions().get(1));
-
-        verify(clientMock).getAdHocFragments(containerId,
-                                             caseId);
-        verify(clientMock).getActiveNodes(eq(containerId),
-                                          eq(caseId),
-                                          eq(0),
-                                          eq(20));
-        verify(clientMock).getCompletedNodes(eq(containerId),
-                                             eq(caseId),
-                                             eq(0),
-                                             eq(20));
-        verify(userTaskServicesClient).findTaskByWorkItemId(node1WorkItemId);
-        verify(userTaskServicesClient).findTaskByWorkItemId(node3WorkItemId);
-        verify(userTaskServicesClient,
-               never()).findTaskByWorkItemId(node2WorkItemId);
-    }
-
-    @Test
     public void testGetInProgressActions() {
         Long node1WorkItemId = 1L;
         Long node2WorkItemId = 2L;
@@ -984,85 +700,7 @@ public class RemoteCaseManagementServiceImplTest {
         verify(userTaskServicesClient,
                never()).findTaskByWorkItemId(node2WorkItemId);
     }
-    
-    @Test
-    public void testGetInProgressActions_bulkInProgressActions() {
-        Long node1WorkItemId = 1L;
-        Long node2WorkItemId = 2L;
-        Long node3WorkItemId = 3L;
-        String taskActualOwner = "Owner";
-
-        NodeInstance node1 = createTestNodeInstance("active1",
-                                                   "Human Task",
-                                                   node1WorkItemId);
-        NodeInstance node2 = createTestNodeInstance("active2",
-                                                   "Service Task",
-                                                   node2WorkItemId);
-        NodeInstance node3 = createTestNodeInstance("active3",
-                "Service Task",
-                node3WorkItemId);
-        
-        TaskInstance t1 = TaskInstance.builder()
-                .actualOwner(taskActualOwner)
-                .build();
-
-        when(clientMock.getActiveNodes(eq(containerId),
-                                       eq(caseId),
-                                       eq(0),
-                                      eq(2))).thenReturn(Arrays.asList(node1,
-                                                                           node2, node3));
-        when(userTaskServicesClient.findTaskByWorkItemId(node1WorkItemId)).thenReturn(t1);
-
-        List<CaseActionSummary> actionsSummaries = testedService.getInProgressActions(containerId,
-                                                                                      caseId, 0, 2);
-
-        assertEquals(2,
-                     actionsSummaries.size());
-        assertEquals(CaseActionStatus.IN_PROGRESS,
-                     actionsSummaries.get(0).getActionStatus());
-        assertEquals(CaseActionStatus.IN_PROGRESS,
-                     actionsSummaries.get(1).getActionStatus());
-        assertEquals(taskActualOwner,
-                     actionsSummaries.get(0).getActualOwner());
-        assertTrue(isNullOrEmpty(actionsSummaries.get(1).getActualOwner()));
-
-        CaseActionMapperTest.assertCaseActionNodeInstance(node1,
-                                                          actionsSummaries.get(0));
-        CaseActionMapperTest.assertCaseActionNodeInstance(node2,
-                                                          actionsSummaries.get(1));
-        verify(userTaskServicesClient).findTaskByWorkItemId(node1WorkItemId);
-        verify(userTaskServicesClient,
-               never()).findTaskByWorkItemId(node2WorkItemId);
-    }
-    
-    @Test 
-    public void testGetCaseCompletedNodes_bulkCompletedNodes() {
-        int pageSize = 20;
-        
-        List<NodeInstance> completedNodes = new ArrayList<NodeInstance>();
-        
-        for (int i = 0 ; i < 55 ; i++) {
-            NodeInstance node = createTestNodeInstance("active1", "Human Task", 1L);
-            node.setCompleted(true);
-            completedNodes.add(node);
-        }
-        
-        List<NodeInstance> expectedFirstPage = completedNodes.subList(0, 20);
-        List<NodeInstance> expectedSecondPage = completedNodes.subList(20, 40);
-        List<NodeInstance> expectedThirdPage = completedNodes.subList(40, 55);
-
-        when(clientMock.getCompletedNodes(containerId, caseId, 0, pageSize)).thenReturn(expectedFirstPage);
-        List<NodeInstance> actualFirstPage = testedService.getCaseCompletedNodes(containerId, caseId, 0, 20);
-        assertEquals(expectedFirstPage.size(), actualFirstPage.size());
-        
-        when(clientMock.getCompletedNodes(containerId, caseId, 1, pageSize)).thenReturn(expectedSecondPage);
-        List<NodeInstance> actualSecondPage = testedService.getCaseCompletedNodes(containerId, caseId, 1, 20);
-        assertEquals(expectedSecondPage.size(), actualSecondPage.size());
-        
-        when(clientMock.getCompletedNodes(containerId, caseId, 2, pageSize)).thenReturn(expectedThirdPage);
-        List<NodeInstance> actualThirdPage = testedService.getCaseCompletedNodes(containerId, caseId, 2, 20);
-        assertEquals(expectedThirdPage.size(), actualThirdPage.size());     
-    }
+       
 
     @Test
     public void testGetAdHocActions() {
@@ -1125,6 +763,285 @@ public class RemoteCaseManagementServiceImplTest {
                                              caseId);
     }
     
+    /* Tests for results pagination */
+    
+    @Test
+    public void testGetCaseDefinitions_bulkCaseDefinitions() {
+        
+        int pageSize = 20;
+        List<CaseDefinition> caseDefinitions = new ArrayList<CaseDefinition>();
+        
+        for (int i = 0; i < 55; i++) {
+            final CaseDefinition caseDefinition = createTestDefinition();
+            caseDefinitions.add(caseDefinition);
+        }
+        
+        List<CaseDefinition> expectedFirstPage = caseDefinitions.subList(0, 20);
+        List<CaseDefinition> expectedSecondPage = caseDefinitions.subList(20, 40);
+        List<CaseDefinition> expectedThirdPage = caseDefinitions.subList(40, 55);
+        
+        when(clientMock.getCaseDefinitions(0, 
+                                           pageSize, 
+                                           CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME, 
+                                           true))
+                .thenReturn(expectedFirstPage);       
+        List<CaseDefinitionSummary> actualFirstPage = testedService.getCaseDefinitions(0, pageSize);
+        assertNotNull(actualFirstPage);
+        assertEquals(expectedFirstPage.size(), actualFirstPage.size());
+        
+        when(clientMock.getCaseDefinitions(1, 
+                                           pageSize, 
+                                           CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME, 
+                                           true))
+                .thenReturn(expectedSecondPage);
+        List<CaseDefinitionSummary> actualSecondPage = testedService.getCaseDefinitions(1, pageSize);
+        assertNotNull(actualSecondPage);
+        assertEquals(expectedSecondPage.size(), actualSecondPage.size());
+
+        when(clientMock.getCaseDefinitions(2, 
+                                           pageSize, 
+                                           CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME, 
+                                           true))
+                .thenReturn(expectedThirdPage);
+        List<CaseDefinitionSummary> actualThirdPage = testedService.getCaseDefinitions(2, pageSize);
+        assertNotNull(actualThirdPage);
+        assertEquals(expectedThirdPage.size(), actualThirdPage.size());
+ 
+    }
+    
+    @Test
+    public void getCaseInstances_bulkCaseInstances() {
+        int pageSize = 20;
+        
+        final CaseInstanceSearchRequest request = new CaseInstanceSearchRequest();
+        
+        List<CaseInstance> caseInstances = new ArrayList<CaseInstance>();
+        
+        for (int i = 0 ; i < 55 ; i++) {
+            caseInstances.add(createTestInstance(caseId));
+        }
+        
+        List<CaseInstance> expectedFirstPage = caseInstances.subList(0, 20);
+        List<CaseInstance> expectedSecondPage = caseInstances.subList(20, 40);
+        List<CaseInstance> expectedThirdPage = caseInstances.subList(40, 55);
+        
+
+        when(clientMock.getCaseInstances(singletonList(request.getStatus().getName()),
+                                         0,
+                                         pageSize)).thenReturn(expectedFirstPage);
+        List<CaseInstanceSummary> actualFirstPage = testedService.getCaseInstances(request, 0, pageSize);
+        assertEquals(20, actualFirstPage.size());
+        
+        when(clientMock.getCaseInstances(singletonList(request.getStatus().getName()),
+                                         1,
+                                         pageSize)).thenReturn(expectedSecondPage);
+        List<CaseInstanceSummary> actualSecondPage = testedService.getCaseInstances(request, 1, pageSize);
+        assertEquals(20, actualSecondPage.size());
+        
+        when(clientMock.getCaseInstances(singletonList(request.getStatus().getName()),
+                2,
+                pageSize)).thenReturn(expectedThirdPage);
+        List<CaseInstanceSummary> actualThirdPage = testedService.getCaseInstances(request, 2, pageSize);
+        assertEquals(15, actualThirdPage.size());       
+    }
+    
+    @Test
+    public void testGetComments_bulkComments() {
+        int pageSize = 20;
+        List<CaseComment> caseComments = new ArrayList<>();
+
+        for (int i = 0; i < 55; i++) {
+            final CaseComment caseComment = createTestComment();
+            caseComments.add(caseComment);
+        }
+        
+        List<CaseComment> expectedFirstPage = caseComments.subList(0, 20);
+        List<CaseComment> expectedSecondPage = caseComments.subList(20, 40);
+        List<CaseComment> expectedThirdPage = caseComments.subList(40, 55);
+        
+        when(clientMock.getComments(containerId, 
+                                    caseId, 
+                                    0, 
+                                    20)).thenReturn(expectedFirstPage);
+        
+        List<CaseCommentSummary> actualFirstPage = testedService.getComments(serverTemplateId, 
+                                                                      containerId, 
+                                                                      caseId, 
+                                                                      0, 
+                                                                      pageSize);
+        
+        assertNotNull(actualFirstPage);
+        assertEquals(20, actualFirstPage.size());
+        
+        when(clientMock.getComments(containerId, 
+                                    caseId, 
+                                    1, 
+                                    20)).thenReturn(expectedSecondPage);
+        
+        List<CaseCommentSummary> actualSecondPage = testedService.getComments(serverTemplateId, 
+                                             containerId, 
+                                             caseId, 
+                                             1, 
+                                             pageSize);
+        
+        assertNotNull(actualSecondPage);
+        assertEquals(20, actualSecondPage.size());
+        
+        when(clientMock.getComments(containerId, 
+                                    caseId, 
+                                    2, 
+                                    20)).thenReturn(expectedThirdPage);
+        
+        List<CaseCommentSummary> actualThirdPage = testedService.getComments(serverTemplateId, 
+                                             containerId, 
+                                             caseId, 
+                                             2, 
+                                             pageSize);
+        
+        assertNotNull(actualThirdPage);
+        assertEquals(15, actualThirdPage.size());       
+    }
+    
+    @Test
+    public void getCaseMilestones_bulkMilestones() {
+        int pageSize = 20;
+        
+        List<CaseMilestone> caseMilestones = new ArrayList<CaseMilestone>();
+       
+        for (int i = 0 ; i < 55 ; i++) {
+            caseMilestones.add(createTestMilestone("id" + i, "milestone" + i, "Available"));
+        }
+        
+        List<CaseMilestone> expectedFirstPage = caseMilestones.subList(0, 20);
+        List<CaseMilestone> expectedSecondPage = caseMilestones.subList(20, 40);
+        List<CaseMilestone> expectedThirdPage = caseMilestones.subList(40, 55);
+        
+        
+        when(clientMock.getMilestones(containerId, caseId, false, 0, pageSize)).thenReturn(expectedFirstPage);        
+        List<CaseMilestoneSummary> actualFirstPage = testedService.getCaseMilestones(containerId, caseId, new CaseMilestoneSearchRequest(), 0, pageSize);
+        assertEquals(expectedFirstPage.size(), actualFirstPage.size());
+        
+        when(clientMock.getMilestones(containerId, caseId, false, 1, pageSize)).thenReturn(expectedSecondPage);        
+        List<CaseMilestoneSummary> actualSecondPage = testedService.getCaseMilestones(containerId, caseId, new CaseMilestoneSearchRequest(), 1, pageSize);
+        assertEquals(expectedSecondPage.size(), actualSecondPage.size());
+        
+        when(clientMock.getMilestones(containerId, caseId, false, 2, pageSize)).thenReturn(expectedThirdPage);        
+        List<CaseMilestoneSummary> actualThirdPage = testedService.getCaseMilestones(containerId, caseId, new CaseMilestoneSearchRequest(), 2, pageSize);
+        assertEquals(expectedThirdPage.size(), actualThirdPage.size());
+    }
+    
+    @Test
+    public void testGetCaseActions_bulkActions() {
+        final CaseInstance ci = createTestInstance(caseId);
+        when(clientMock.getCaseInstance(ci.getContainerId(),
+                                        ci.getCaseId(),
+                                        true,
+                                        true,
+                                        true,
+                                        true))
+                .thenReturn(ci);
+        
+        List<CaseAdHocFragment> adHocFragments = new ArrayList<CaseAdHocFragment>();
+        
+        for (int i = 0 ; i < 55 ; i++) {
+            adHocFragments.add(createTestCaseAdHocFragment("adHocFragment-name-" + i, "adHocFragment-type-" + i));             
+        }
+
+//        CaseAdHocFragment cAHF1 = createTestCaseAdHocFragment("adHocFragment-name-a",
+//                                                              "adHocFragment-type-a");
+//        CaseAdHocFragment cAHF2 = createTestCaseAdHocFragment("adHocFragment-name-b",
+//                                                              "adHocFragment-type-b");
+        
+        
+        // this needs implemented....
+//        when(clientMock.getAdHocFragments(containerId,
+//                                          caseId)).thenReturn(Arrays.asList(cAHF1,
+//                                                                            cAHF2));
+
+        Actions actions = testedService.getCaseActions(serverTemplateId,
+                                                       containerId,
+                                                       caseId,
+                                                       userId, 0, 20);
+
+        assertEquals(2,
+                     actions.getAvailableActions().size());
+        
+        System.out.println("ACTIONS: " + actions.getAvailableActions().get(0).getName());
+        System.out.println("ACTIONS: " + actions.getAvailableActions().get(1).getName());
+
+    }
+    
+    @Test
+    public void testGetInProgressActions_bulkInProgressActions() {
+        int pageSize = 20;
+
+        List<NodeInstance> activeNodeInstances = new ArrayList<NodeInstance>();
+        
+        for (int i = 0 ; i < 55 ; i++) {
+            activeNodeInstances.add(createTestNodeInstance("active" + i, "Service Task", + Long.valueOf(i)));
+        }
+        
+        List<NodeInstance> expectedFirstPage = activeNodeInstances.subList(0, 20);
+        List<NodeInstance> expectedSecondPage = activeNodeInstances.subList(20, 40);
+        List<NodeInstance> expectedThirdPage = activeNodeInstances.subList(40, 55);
+        
+        when(clientMock.getActiveNodes(eq(containerId),
+                eq(caseId),
+                eq(0),
+                eq(pageSize))).thenReturn(expectedFirstPage);        
+        List<CaseActionSummary> actualFirstPage = testedService.getInProgressActions(containerId,
+                caseId, 0, pageSize);        
+        assertEquals(20, actualFirstPage.size());
+        
+        when(clientMock.getActiveNodes(eq(containerId),
+                eq(caseId),
+                eq(1),
+                eq(pageSize))).thenReturn(expectedSecondPage);        
+        List<CaseActionSummary> actualSecondPage = testedService.getInProgressActions(containerId,
+                caseId, 1, pageSize);        
+        assertEquals(20, actualSecondPage.size());
+        
+        when(clientMock.getActiveNodes(eq(containerId),
+                eq(caseId),
+                eq(2),
+                eq(pageSize))).thenReturn(expectedThirdPage);        
+        List<CaseActionSummary> actualThirdPage = testedService.getInProgressActions(containerId,
+                caseId, 2, pageSize);        
+        assertEquals(15, actualThirdPage.size());
+    }   
+    
+    
+    @Test 
+    public void testGetCaseCompletedNodes_bulkCompletedNodes() {
+        int pageSize = 20;
+        
+        List<NodeInstance> completedNodes = new ArrayList<NodeInstance>();
+        
+        for (int i = 0 ; i < 55 ; i++) {
+            NodeInstance node = createTestNodeInstance("active1", "Human Task", 1L);
+            node.setCompleted(true);
+            completedNodes.add(node);
+        }
+        
+        List<NodeInstance> expectedFirstPage = completedNodes.subList(0, 20);
+        List<NodeInstance> expectedSecondPage = completedNodes.subList(20, 40);
+        List<NodeInstance> expectedThirdPage = completedNodes.subList(40, 55);
+
+        when(clientMock.getCompletedNodes(containerId, caseId, 0, pageSize)).thenReturn(expectedFirstPage);
+        List<NodeInstance> actualFirstPage = testedService.getCaseCompletedNodes(containerId, caseId, 0, 20);
+        assertEquals(expectedFirstPage.size(), actualFirstPage.size());
+        
+        when(clientMock.getCompletedNodes(containerId, caseId, 1, pageSize)).thenReturn(expectedSecondPage);
+        List<NodeInstance> actualSecondPage = testedService.getCaseCompletedNodes(containerId, caseId, 1, 20);
+        assertEquals(expectedSecondPage.size(), actualSecondPage.size());
+        
+        when(clientMock.getCompletedNodes(containerId, caseId, 2, pageSize)).thenReturn(expectedThirdPage);
+        List<NodeInstance> actualThirdPage = testedService.getCaseCompletedNodes(containerId, caseId, 2, 20);
+        assertEquals(expectedThirdPage.size(), actualThirdPage.size());     
+    }
+    
+    // get completed actions?
+    
     @Test
     public void testGetProcessDefinitions_bulkProcessDefinitions() {
         int pageSize = 20;
@@ -1152,4 +1069,7 @@ public class RemoteCaseManagementServiceImplTest {
         List<ProcessDefinitionSummary> actualThirdPage = testedService.getProcessDefinitions(containerId, 2, pageSize);
         assertEquals(expectedThirdPage.size(), actualThirdPage.size());           
     }
+    
+
+    
 }
