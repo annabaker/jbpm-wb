@@ -18,7 +18,6 @@ package org.jbpm.workbench.cm.client.stages;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.jbpm.workbench.cm.client.resources.i18n.Constants;
 import org.jbpm.workbench.cm.client.util.AbstractCaseInstancePresenter;
 import org.jbpm.workbench.cm.model.CaseInstanceSummary;
@@ -29,7 +28,7 @@ import org.uberfire.client.mvp.UberElement;
 
 @Dependent
 @WorkbenchScreen(identifier = CaseStagesPresenter.SCREEN_ID)
-public abstract class CaseStagesPresenter extends AbstractCaseInstancePresenter<CaseStagesPresenter.CaseStagesView> {
+public class CaseStagesPresenter extends AbstractCaseInstancePresenter<CaseStagesPresenter.CaseStagesView> {
 
     public static final String SCREEN_ID = "Case Stages Screen";
 
@@ -57,6 +56,6 @@ public abstract class CaseStagesPresenter extends AbstractCaseInstancePresenter<
 
     @Override
     public void setPageSize(int pageSize) {
-        throw new NotImplementedException("setPageSize(int pageSize) is not implemented for " + CaseStagesPresenter.class);
+     // TODO Auto-generated method stub
     }
 }

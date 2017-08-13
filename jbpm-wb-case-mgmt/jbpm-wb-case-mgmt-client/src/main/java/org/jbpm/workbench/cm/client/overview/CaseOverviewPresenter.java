@@ -20,7 +20,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.jbpm.workbench.cm.client.actions.CaseActionsPresenter;
 import org.jbpm.workbench.cm.client.comments.CaseCommentsPresenter;
 import org.jbpm.workbench.cm.client.details.CaseDetailsPresenter;
@@ -138,7 +137,7 @@ public class CaseOverviewPresenter extends AbstractCaseInstancePresenter<CaseOve
     
     @Override
     public void setPageSize(int pageSize) {
-        throw new NotImplementedException("setPageSize(int pageSize) is not implemented for " + CaseStagesPresenter.class);
+        // TODO Auto-generated method stub
     }
 
     public interface CaseOverviewView extends UberElement<CaseOverviewPresenter> {

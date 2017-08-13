@@ -24,9 +24,7 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.jbpm.workbench.cm.client.stages.CaseStagesPresenter;
 import org.jbpm.workbench.cm.client.util.AbstractCaseInstancePresenter;
 import org.jbpm.workbench.cm.model.CaseActionSummary;
 import org.jbpm.workbench.cm.model.CaseInstanceSummary;
@@ -247,6 +245,6 @@ public class CaseActionsPresenter extends AbstractCaseInstancePresenter<CaseActi
 
     @Override
     public void setPageSize(int pageSize) {
-        throw new NotImplementedException("setPageSize(int pageSize) is not implemented for " + CaseStagesPresenter.class);		
+        // TODO Auto-generated method stub
     }
 }
