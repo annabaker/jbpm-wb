@@ -108,4 +108,10 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
 
         void hideLoadButton(boolean doHide);
     }
+
+    @Override
+    public void setPageSize() {
+        // TODO Auto-generated method stub
+        
+    }
 }

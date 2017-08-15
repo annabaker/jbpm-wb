@@ -170,5 +170,6 @@ public class CaseInstanceListPresenterTest {
         verify(caseManagementService).getCaseInstances(view.getCaseInstanceSearchRequest(),
                                                        1,
                                                        presenter.getPageSize());
+        
     }
 }

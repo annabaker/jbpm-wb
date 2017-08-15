@@ -163,4 +163,10 @@ public class NewCaseInstancePresenter extends AbstractPresenter<NewCaseInstanceP
 
         void showError(List<String> messages);
     }
+
+    @Override
+    public void setPageSize() {
+        // TODO Auto-generated method stub
+        
+    }
 }
