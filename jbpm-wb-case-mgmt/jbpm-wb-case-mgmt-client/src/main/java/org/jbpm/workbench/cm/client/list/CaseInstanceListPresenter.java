@@ -18,8 +18,13 @@ package org.jbpm.workbench.cm.client.list;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -50,13 +55,16 @@ import static java.util.stream.Collectors.toList;
 public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceListPresenter.CaseInstanceListView> {
 
     public int currentPage = 0;
-    public static final int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 2;
 
     public static final String SCREEN_ID = "Case List";
 
     private Caller<CaseManagementService> caseService;
 
     List<CaseInstanceSummary> visibleCaseInstances = new ArrayList<CaseInstanceSummary>();
+    HashSet<CaseInstanceSummary> hashSet = new HashSet<CaseInstanceSummary>();
+    
+    Logger logger = Logger.getLogger("CaseInstanceListPresenter");
 
     @Inject
     private PlaceManager placeManager;
@@ -94,20 +102,43 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
     public void createCaseInstance() {
         newCaseInstancePresenter.show();
     }
-
+    
     private void caseInstancesServiceCall(int currentPage) {
-        caseService.call((List<CaseInstanceSummary> cases) -> {
-            visibleCaseInstances.addAll(cases);
-            view.hideLoadButton(cases.size() < PAGE_SIZE);
-            view.setCaseInstanceList(visibleCaseInstances.stream().collect(toList()));
+        caseService.call((List<CaseInstanceSummary> cases) -> {          
+            visibleCaseInstances.addAll(cases);   
+            hashSet.addAll(cases);
+            logger.log(Level.SEVERE, "hash set size" + hashSet.size());
+            Set<CaseInstanceSummary> uniqueCaseInstances = new LinkedHashSet<>(visibleCaseInstances);
+            logger.log(Level.SEVERE, "uniqueCaseInstances" + uniqueCaseInstances.size());
+            visibleCaseInstances.clear();
+            visibleCaseInstances.addAll(uniqueCaseInstances);           
+            view.setCaseInstanceList(visibleCaseInstances.stream().collect(toList())); 
+            logger.log(Level.SEVERE, "visible size inside service call" + visibleCaseInstances.size());
         }).getCaseInstances(view.getCaseInstanceSearchRequest(),
                             currentPage,
                             PAGE_SIZE);
+        
+        
+        caseService.call((List<CaseInstanceSummary> cases) -> {
+            
+            logger.log(Level.SEVERE, "cases for next page size" + cases.size());
+            
+            if (cases.isEmpty()) {
+                view.hideLoadButton();
+            }
+            else {
+                view.showLoadButton();
+            }
+           
+        }).getCaseInstances(view.getCaseInstanceSearchRequest(),
+                            getCurrentPage() + 1,
+                            PAGE_SIZE);
+        
+        
     }
 
     protected void refreshData() {
-        visibleCaseInstances.clear();
-        caseInstancesServiceCall(currentPage);
+        caseInstancesServiceCall(getCurrentPage());
     }
 
     protected void selectCaseInstance(final CaseInstanceSummary cis) {
@@ -158,13 +189,30 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
 
         CaseInstanceSearchRequest getCaseInstanceSearchRequest();
 
-        void hideLoadButton(boolean doHide);
-
         void hideLoadButton();
+
+        void showLoadButton();
     }
 
     public void loadMoreCaseInstances() {
         this.currentPage = currentPage + 1;
         caseInstancesServiceCall(currentPage);
+        logger.log(Level.SEVERE, "visibleCasesSize" + visibleCaseInstances.size());
+        int maxPageIndex = (visibleCaseInstances.size() + getPageSize() - 1) / getPageSize();
+//        if (maxPageIndex == getCurrentPage()) {
+//            view.hideLoadButton();
+//        }
+        logger.log(Level.SEVERE, "maxPageIndex" + maxPageIndex);
+        logger.log(Level.SEVERE, "currentPage" + getCurrentPage());
+        //displayLoadMoreToggle();
     }
+    
+//    private void displayLoadMoreToggle() {
+//        int maxPageIndex = (visibleCaseInstances.size() + getPageSize() - 1) / getPageSize() - 1;
+//        logger.log(Level.SEVERE, "maxPageIndex" + maxPageIndex);
+//        logger.log(Level.SEVERE, "getCurrentPage" + getCurrentPage());
+//        logger.log(Level.SEVERE, "visibleCasesSize" + visibleCaseInstances.size());
+//        logger.log(Level.SEVERE, "visibleCasesSize" + visibleCaseInstances.stream().collect(toList()).size());
+//
+//    }
 }
