@@ -24,6 +24,9 @@ import org.uberfire.client.mvp.UberElement;
 
 public abstract class AbstractPresenter<V extends UberElement> {
 
+    protected int pageSize;
+    protected int currentPage = 0;
+    
     @Inject
     protected V view;
 
@@ -35,5 +38,19 @@ public abstract class AbstractPresenter<V extends UberElement> {
     @WorkbenchPartView
     public V getView() {
         return view;
+    }
+    
+    public abstract void setPageSize();
+    
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setCurrentPage(int i) {
+        this.currentPage = i;
+    }
+
+    public int getCurrentPage() {
+        return this.currentPage;
     }
 }

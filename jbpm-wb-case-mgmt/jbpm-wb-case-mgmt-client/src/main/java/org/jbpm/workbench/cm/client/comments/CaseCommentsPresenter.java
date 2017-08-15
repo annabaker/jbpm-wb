@@ -161,4 +161,10 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
 
         String label();
     }
+
+    @Override
+    public void setPageSize() {
+        // TODO Auto-generated method stub
+        
+    }
 }

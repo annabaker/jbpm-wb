@@ -53,4 +53,10 @@ public class CaseStagesPresenter extends AbstractCaseInstancePresenter<CaseStage
 
         void setCaseStagesList(List<CaseStageSummary> caseStagesList);
     }
+
+    @Override
+    public void setPageSize() {
+        // TODO Auto-generated method stub
+        
+    }
 }

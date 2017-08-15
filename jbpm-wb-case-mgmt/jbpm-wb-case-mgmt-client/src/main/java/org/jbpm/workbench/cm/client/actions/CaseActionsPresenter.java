@@ -243,4 +243,10 @@ public class CaseActionsPresenter extends AbstractCaseInstancePresenter<CaseActi
 
         String label();
     }
+
+    @Override
+    public void setPageSize() {
+        // TODO Auto-generated method stub
+        
+    }
 }
