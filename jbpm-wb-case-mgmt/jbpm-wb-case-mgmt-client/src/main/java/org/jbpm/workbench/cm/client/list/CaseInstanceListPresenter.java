@@ -16,8 +16,8 @@
 
 package org.jbpm.workbench.cm.client.list;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +55,7 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
 
     private Caller<CaseManagementService> caseService;
 
-    HashSet<CaseInstanceSummary> visibleCaseInstances = new HashSet<CaseInstanceSummary>();
+    HashMap<String, CaseInstanceSummary> visibleCaseInstances = new HashMap<String, CaseInstanceSummary>();
 
     @Inject
     private PlaceManager placeManager;
@@ -102,13 +102,21 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
     }
     
     private void caseInstancesServiceCall() {
-        caseService.call((List<CaseInstanceSummary> cases) -> {          
-            visibleCaseInstances.addAll(cases);       
-            view.setCaseInstanceList(visibleCaseInstances.stream().collect(toList())); 
+        caseService.call((List<CaseInstanceSummary> caseInstances) -> {    
+            for (CaseInstanceSummary caseInstance : caseInstances) {
+                visibleCaseInstances.put(caseInstance.getCaseId(), caseInstance);
+            }
+            ArrayList<CaseInstanceSummary> visibleCaseInstanceList = new ArrayList<CaseInstanceSummary>(visibleCaseInstances.values());
+            //visibleCaseInstances.addAll(cases);       
+            view.setCaseInstanceList(visibleCaseInstanceList.stream().collect(toList())); 
         }).getCaseInstances(view.getCaseInstanceSearchRequest(),
                             getCurrentPage(),
                             getPageSize());       
         loadButtonToggle();
+        
+        if (visibleCaseInstances.isEmpty()) {
+            setCurrentPage(0);
+        }
 
     }
 
@@ -131,7 +139,10 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
 
     protected void cancelCaseInstance(final CaseInstanceSummary caseInstanceSummary) {
         caseService.call(
-                e -> refreshData()
+                e -> {
+                    visibleCaseInstances.remove(caseInstanceSummary.getCaseId());
+                    refreshData();
+                }
         ).cancelCaseInstance(null,
                              caseInstanceSummary.getContainerId(),
                              caseInstanceSummary.getCaseId());
@@ -139,7 +150,10 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
 
     protected void destroyCaseInstance(final CaseInstanceSummary caseInstanceSummary) {
         caseService.call(
-                e -> refreshData()
+                e -> {
+                    visibleCaseInstances.remove(caseInstanceSummary.getCaseId());
+                    refreshData();
+                }
         ).destroyCaseInstance(null,
                               caseInstanceSummary.getContainerId(),
                               caseInstanceSummary.getCaseId());

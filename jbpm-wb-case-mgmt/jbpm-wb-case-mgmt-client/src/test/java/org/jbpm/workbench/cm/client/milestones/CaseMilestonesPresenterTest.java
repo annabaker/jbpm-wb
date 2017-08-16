@@ -157,7 +157,7 @@ public class CaseMilestonesPresenterTest extends AbstractCaseInstancePresenterTe
         assertEquals(1,
                      presenter.getCurrentPage());
         verify(caseManagementService,
-                times(1)).getCaseMilestones(cis.getContainerId(),
+                times(3)).getCaseMilestones(cis.getContainerId(),
                                             cis.getCaseId(),
                                             caseMilestoneListView.getCaseMilestoneSearchRequest(),
                                             1,

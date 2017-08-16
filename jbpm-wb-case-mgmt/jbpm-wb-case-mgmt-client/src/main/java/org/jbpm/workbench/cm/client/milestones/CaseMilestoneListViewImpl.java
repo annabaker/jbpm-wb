@@ -113,7 +113,14 @@ public class CaseMilestoneListViewImpl extends AbstractView<CaseMilestoneListPre
     }
 
     @Override
-    public void hideLoadButton(boolean doHide) {
-        loadDiv.setHidden(doHide);
+    public void hideLoadButton() {
+        loadDiv.setHidden(true);
+        
+    }
+
+    @Override
+    public void showLoadButton() {
+        loadDiv.setHidden(false);
+        
     }
 }

@@ -16,8 +16,11 @@
 
 package org.jbpm.workbench.cm.client.milestones;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.enterprise.context.Dependent;
 
 import org.jbpm.workbench.cm.client.util.AbstractCaseInstancePresenter;
@@ -36,24 +39,17 @@ import static java.util.stream.Collectors.toList;
 @WorkbenchScreen(identifier = CaseMilestoneListPresenter.SCREEN_ID)
 public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<CaseMilestoneListPresenter.CaseMilestoneListView> {
 
-    public int currentPage = 0;
     public static final int PAGE_SIZE = 10;
 
     public static final String SCREEN_ID = "Case Milestone List";
 
-    List<CaseMilestoneSummary> visibleCaseMilestones = new ArrayList<CaseMilestoneSummary>();
-
-    public int getPageSize() {
-        return PAGE_SIZE;
+    HashSet<CaseMilestoneSummary> visibleCaseMilestones = new HashSet<CaseMilestoneSummary>();
+    
+    public CaseMilestoneListPresenter() {
+        setPageSize();
     }
-
-    public void setCurrentPage(int i) {
-        this.currentPage = i;
-    }
-
-    public int getCurrentPage() {
-        return this.currentPage;
-    }
+    
+    Logger logger = Logger.getLogger("CaseMilestoneListPresenter");
 
     @WorkbenchPartTitle
     public String getTitle() {
@@ -69,33 +65,60 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
     protected void loadCaseInstance(final CaseInstanceSummary cis) {
         refreshData();
     }
+    
+    @Override
+    public void setPageSize() {
+        this.pageSize = PAGE_SIZE;          
+    }
 
     protected void searchCaseMilestones() {
         refreshData();
     }
 
     protected void refreshData() {
-        visibleCaseMilestones.clear();
         milestonesServiceCall(caseId,
-                              currentPage);
+                              getCurrentPage());
     }
 
     protected void milestonesServiceCall(String caseId,
                                          int currentPage) {
         caseService.call((List<CaseMilestoneSummary> milestones) -> {
             visibleCaseMilestones.addAll(milestones);
-            view.setCaseMilestoneList(visibleCaseMilestones.stream().collect(toList()));
+            view.setCaseMilestoneList(visibleCaseMilestones.stream()    
+                    .collect(toList()));
         }).getCaseMilestones(containerId,
                              caseId,
                              view.getCaseMilestoneSearchRequest(),
-                             currentPage,
-                             PAGE_SIZE);
+                             getCurrentPage(),
+                             getPageSize());
+        
+        logger.log(Level.SEVERE, "page number before:" + getCurrentPage());
+
+        
+        loadButtonToggle();
+        
+        logger.log(Level.SEVERE, "page number after:" + getCurrentPage());
     }
 
     protected void loadMoreCaseMilestones() {
-        this.currentPage = currentPage + 1;
+        setCurrentPage(getCurrentPage() + 1);
         milestonesServiceCall(caseId,
-                              currentPage);
+                              getCurrentPage());
+    }
+    
+    private void loadButtonToggle() {
+        caseService.call((List<CaseMilestoneSummary> milestones) -> {            
+            if (milestones.isEmpty()) {
+                view.hideLoadButton();
+            }
+            else {
+                view.showLoadButton();
+            }           
+        }).getCaseMilestones(containerId,
+                caseId,
+                view.getCaseMilestoneSearchRequest(),
+                getCurrentPage() + 1,
+                getPageSize());
     }
 
     public interface CaseMilestoneListView extends UberElement<CaseMilestoneListPresenter> {
@@ -106,12 +129,8 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
 
         CaseMilestoneSearchRequest getCaseMilestoneSearchRequest();
 
-        void hideLoadButton(boolean doHide);
-    }
-
-    @Override
-    public void setPageSize() {
-        // TODO Auto-generated method stub
+        void hideLoadButton();
         
+        void showLoadButton();
     }
 }
