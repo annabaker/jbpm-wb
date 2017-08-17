@@ -261,7 +261,8 @@ public class CaseCommentsPresenterTest extends AbstractCaseInstancePresenterTest
         
         presenter.loadMoreCaseComments();
         
-        assertEquals(2, presenter.getCurrentPage());
-        verify(caseManagementService).getComments(serverTemplateId, cis.getContainerId(), cis.getCaseId(), presenter.getCurrentPage(), presenter.getPageSize());
+        assertEquals(1, presenter.getCurrentPage());
+        assertEquals(20, presenter.getPageSize());
+        verify(caseManagementService, times(2)).getComments(serverTemplateId, cis.getContainerId(), cis.getCaseId(), presenter.getCurrentPage(), presenter.getPageSize());
     }
 }

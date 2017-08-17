@@ -146,18 +146,17 @@ public class CaseMilestonesPresenterTest extends AbstractCaseInstancePresenterTe
     public void testLoadMoreCaseMilestones() {
         setupCaseInstance(cis,
                           serverTemplateId);
-        presenter.searchCaseMilestones();
 
         for (int i = 0; i < 25; i++) {
             caseMilestonesSummaryList.add(createCaseMilestone());
         }
-
+        
         presenter.loadMoreCaseMilestones();
 
         assertEquals(1,
                      presenter.getCurrentPage());
         verify(caseManagementService,
-                times(3)).getCaseMilestones(cis.getContainerId(),
+                times(2)).getCaseMilestones(cis.getContainerId(),
                                             cis.getCaseId(),
                                             caseMilestoneListView.getCaseMilestoneSearchRequest(),
                                             1,
