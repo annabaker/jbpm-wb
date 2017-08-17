@@ -150,6 +150,9 @@ public class CaseInstanceListPresenterTest {
 
     @Test
     public void testLoadMoreCaseInstances() {
+        
+        presenter.init();
+        
         for (int i = 0; i < 19; i++) {
             caseInstanceSummaryList.add(createCaseInstance());
         }
@@ -165,9 +168,7 @@ public class CaseInstanceListPresenterTest {
 
         presenter.loadMoreCaseInstances();
 
-        assertEquals(1,
-                     presenter.getCurrentPage());
-        verify(caseManagementService).getCaseInstances(view.getCaseInstanceSearchRequest(),
+        verify(caseManagementService, times(2)).getCaseInstances(view.getCaseInstanceSearchRequest(),
                                                        1,
                                                        presenter.getPageSize());
         
