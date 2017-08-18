@@ -88,7 +88,6 @@ public class CaseInstanceListViewImpl extends AbstractView<CaseInstanceListPrese
 
     @Override
     public void setCaseInstanceList(final List<CaseInstanceSummary> caseInstanceList) {
-
         this.caseInstanceList.setModel(caseInstanceList);
         if (caseInstanceList.isEmpty()) {
             removeCSSClass(emptyContainer,
