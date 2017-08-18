@@ -167,10 +167,4 @@ public class CaseOverviewPresenter extends AbstractCaseInstancePresenter<CaseOve
         void addCaseActivities(String placeId,
                                Map<String, String> properties);
     }
-
-    @Override
-    public void setPageSize() {
-        // TODO Auto-generated method stub
-        
-    }
 }
