@@ -40,7 +40,9 @@ public abstract class AbstractPresenter<V extends UberElement> {
         return view;
     }
     
-    public abstract void setPageSize();
+    public void setPageSize() {
+        this.pageSize = -1;
+    }
     
     public int getPageSize() {
         return pageSize;

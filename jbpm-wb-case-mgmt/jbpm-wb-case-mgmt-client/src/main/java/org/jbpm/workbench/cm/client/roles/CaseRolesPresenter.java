@@ -257,10 +257,4 @@ public class CaseRolesPresenter extends AbstractCaseInstancePresenter<CaseRolesP
 
         String label();
     }
-
-    @Override
-    public void setPageSize() {
-        // TODO Auto-generated method stub
-        
-    }
 }

@@ -50,10 +50,4 @@ public class CaseDetailsPresenter extends AbstractCaseInstancePresenter<CaseDeta
                                              TakesValue<CaseInstanceSummary> {
 
     }
-
-    @Override
-    public void setPageSize() {
-        // TODO Auto-generated method stub
-
-    }
 }
