@@ -94,33 +94,33 @@ public class RemoteCaseManagementServiceImplTest {
 
     private CaseDefinition createTestCaseDefinition() {
         CaseDefinition definition = CaseDefinition.builder()
-                .id(caseDefinitionId)
-                .name(caseName)
-                .containerId(containerId)
-                .roles(Collections.emptyMap())
-                .build();
+            .id(caseDefinitionId)
+            .name(caseName)
+            .containerId(containerId)
+            .roles(Collections.emptyMap())
+            .build();
 
         return definition;
     }
 
     private CaseInstance createTestInstance(String caseId) {
         CaseInstance instance = CaseInstance.builder()
-                .caseDescription(caseDescription)
-                .caseId(caseId)
-                .caseStatus(1)
-                .containerId(containerId)
-                .build();
+            .caseDescription(caseDescription)
+            .caseId(caseId)
+            .caseStatus(1)
+            .containerId(containerId)
+            .build();
 
         return instance;
     }
 
     private CaseComment createTestComment() {
         CaseComment comment = CaseComment.builder()
-                .id(commentId)
-                .author(author)
-                .text(text)
-                .addedAt(new Date())
-                .build();
+            .id(commentId)
+            .author(author)
+            .text(text)
+            .addedAt(new Date())
+            .build();
 
         return comment;
     }
@@ -129,11 +129,11 @@ public class RemoteCaseManagementServiceImplTest {
                                               String caseMilestoneName,
                                               String status) {
         CaseMilestone milestone = CaseMilestone.builder()
-                .name(caseMilestoneName)
-                .status(status)
-                .id(caseMilestoneId)
-                .achieved(false)
-                .build();
+            .name(caseMilestoneName)
+            .status(status)
+            .id(caseMilestoneId)
+            .achieved(false)
+            .build();
 
         return milestone;
     }
@@ -141,9 +141,9 @@ public class RemoteCaseManagementServiceImplTest {
     private CaseAdHocFragment createTestCaseAdHocFragment(String name,
                                                           String type) {
         CaseAdHocFragment caseAdHocFragment = CaseAdHocFragment.builder()
-                .name(name)
-                .type(type)
-                .build();
+            .name(name)
+            .type(type)
+            .build();
 
         return caseAdHocFragment;
     }
@@ -152,11 +152,11 @@ public class RemoteCaseManagementServiceImplTest {
                                                String nodeType,
                                                Long workItemId) {
         NodeInstance nodeInstance = NodeInstance.builder()
-                .name(name)
-                .nodeType(nodeType)
-                .workItemId(workItemId)
-                .date(new Date())
-                .build();
+            .name(name)
+            .nodeType(nodeType)
+            .workItemId(workItemId)
+            .date(new Date())
+            .build();
 
         return nodeInstance;
     }
@@ -165,10 +165,10 @@ public class RemoteCaseManagementServiceImplTest {
                                           String stageName,
                                           String stageStatus) {
         CaseStage stage = CaseStage.builder()
-                .id(stageId)
-                .name(stageName)
-                .status(stageStatus)
-                .build();
+            .id(stageId)
+            .name(stageName)
+            .status(stageStatus)
+            .build();
         return stage;
     }
 
@@ -179,7 +179,7 @@ public class RemoteCaseManagementServiceImplTest {
                                            anyInt(),
                                            eq(CaseServicesClient.SORT_BY_CASE_DEFINITION_NAME),
                                            eq(true)))
-                .thenReturn(singletonList(definition));
+            .thenReturn(singletonList(definition));
 
         List<CaseDefinitionSummary> definitions = testedService.getCaseDefinitions();
         assertNotNull(definitions);
@@ -193,7 +193,7 @@ public class RemoteCaseManagementServiceImplTest {
     public void testGetCaseDefinitions_emptyList() {
         when(clientMock.getCaseDefinitions(anyInt(),
                                            anyInt()))
-                .thenReturn(emptyList());
+            .thenReturn(emptyList());
 
         List<CaseDefinitionSummary> definitions = testedService.getCaseDefinitions();
         assertNotNull(definitions);
@@ -205,7 +205,7 @@ public class RemoteCaseManagementServiceImplTest {
         final CaseDefinition definition = createTestCaseDefinition();
         when(clientMock.getCaseDefinition(anyString(),
                                           anyString()))
-                .thenReturn(definition);
+            .thenReturn(definition);
 
         CaseDefinitionSummary actualDef = testedService.getCaseDefinition(serverTemplateId,
                                                                           containerId,
@@ -218,7 +218,7 @@ public class RemoteCaseManagementServiceImplTest {
     public void getCaseDefinition_whenClientReturnsNull() {
         when(clientMock.getCaseDefinition(anyString(),
                                           anyString()))
-                .thenReturn(null);
+            .thenReturn(null);
 
         CaseDefinitionSummary shouldBeNull = testedService.getCaseDefinition(serverTemplateId,
                                                                              containerId,
@@ -371,7 +371,7 @@ public class RemoteCaseManagementServiceImplTest {
                                         true,
                                         true,
                                         true))
-                .thenReturn(ci);
+            .thenReturn(ci);
 
         final CaseInstanceSummary cis = testedService.getCaseInstance(serverTemplateId,
                                                                       ci.getContainerId(),
@@ -388,7 +388,7 @@ public class RemoteCaseManagementServiceImplTest {
                                         true,
                                         true,
                                         true))
-                .thenReturn(null);
+            .thenReturn(null);
 
         final CaseInstanceSummary cis = testedService.getCaseInstance(serverTemplateId,
                                                                       containerId,
@@ -568,7 +568,7 @@ public class RemoteCaseManagementServiceImplTest {
                                         true,
                                         true,
                                         true))
-                .thenReturn(ci);
+            .thenReturn(ci);
 
         CaseAdHocFragment cAHF1 = createTestCaseAdHocFragment("adHocFragment-name-1",
                                                               "adHocFragment-type-1");
@@ -607,8 +607,8 @@ public class RemoteCaseManagementServiceImplTest {
                                                                               node4));
 
         TaskInstance t1 = TaskInstance.builder()
-                .actualOwner("Koe")
-                .build();
+            .actualOwner("Koe")
+            .build();
         when(userTaskServicesClient.findTaskByWorkItemId(node1WorkItemId)).thenReturn(t1);
         when(userTaskServicesClient.findTaskByWorkItemId(node3WorkItemId)).thenReturn(t1);
 
@@ -671,8 +671,8 @@ public class RemoteCaseManagementServiceImplTest {
                                                    "Service Task",
                                                    node2WorkItemId);
         TaskInstance t1 = TaskInstance.builder()
-                .actualOwner(taskActualOwner)
-                .build();
+            .actualOwner(taskActualOwner)
+            .build();
 
         when(clientMock.getActiveNodes(eq(containerId),
                                        eq(caseId),
@@ -735,7 +735,7 @@ public class RemoteCaseManagementServiceImplTest {
                                         true,
                                         true,
                                         true))
-                .thenReturn(ci);
+            .thenReturn(ci);
 
         CaseAdHocFragment cAHF1 = createTestCaseAdHocFragment("adHocFragment-name-1",
                                                               "adHocFragment-type-1");

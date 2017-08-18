@@ -44,11 +44,11 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
     public static final String SCREEN_ID = "Case Milestone List";
 
     HashSet<CaseMilestoneSummary> visibleCaseMilestones = new HashSet<CaseMilestoneSummary>();
-    
+
     public CaseMilestoneListPresenter() {
         setPageSize();
     }
-    
+
     Logger logger = Logger.getLogger("CaseMilestoneListPresenter");
 
     @WorkbenchPartTitle
@@ -65,10 +65,10 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
     protected void loadCaseInstance(final CaseInstanceSummary cis) {
         refreshData();
     }
-    
+
     @Override
     public void setPageSize() {
-        this.pageSize = PAGE_SIZE;          
+        this.pageSize = PAGE_SIZE;
     }
 
     protected void searchCaseMilestones() {
@@ -84,20 +84,21 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
                                          int currentPage) {
         caseService.call((List<CaseMilestoneSummary> milestones) -> {
             visibleCaseMilestones.addAll(milestones);
-            view.setCaseMilestoneList(visibleCaseMilestones.stream()    
-                    .collect(toList()));
+            view.setCaseMilestoneList(visibleCaseMilestones.stream()
+                                          .collect(toList()));
         }).getCaseMilestones(containerId,
                              caseId,
                              view.getCaseMilestoneSearchRequest(),
                              getCurrentPage(),
                              getPageSize());
-        
-        logger.log(Level.SEVERE, "page number before:" + getCurrentPage());
 
-        
+        logger.log(Level.SEVERE,
+                   "page number before:" + getCurrentPage());
+
         loadButtonToggle();
-        
-        logger.log(Level.SEVERE, "page number after:" + getCurrentPage());
+
+        logger.log(Level.SEVERE,
+                   "page number after:" + getCurrentPage());
     }
 
     protected void loadMoreCaseMilestones() {
@@ -105,20 +106,19 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
         milestonesServiceCall(caseId,
                               getCurrentPage());
     }
-    
+
     private void loadButtonToggle() {
-        caseService.call((List<CaseMilestoneSummary> milestones) -> {            
+        caseService.call((List<CaseMilestoneSummary> milestones) -> {
             if (milestones.isEmpty()) {
                 view.hideLoadButton();
-            }
-            else {
+            } else {
                 view.showLoadButton();
-            }           
+            }
         }).getCaseMilestones(containerId,
-                caseId,
-                view.getCaseMilestoneSearchRequest(),
-                getCurrentPage() + 1,
-                getPageSize());
+                             caseId,
+                             view.getCaseMilestoneSearchRequest(),
+                             getCurrentPage() + 1,
+                             getPageSize());
     }
 
     public interface CaseMilestoneListView extends UberElement<CaseMilestoneListPresenter> {
@@ -130,7 +130,7 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
         CaseMilestoneSearchRequest getCaseMilestoneSearchRequest();
 
         void hideLoadButton();
-        
+
         void showLoadButton();
     }
 }

@@ -42,9 +42,9 @@ import static org.mockito.Mockito.*;
 public class CaseMilestonesPresenterTest extends AbstractCaseInstancePresenterTest {
 
     final String serverTemplateId = "serverTemplateId",
-            containerId = "containerId",
-            caseDefId = "caseDefinitionId",
-            caseId = "caseId";
+        containerId = "containerId",
+        caseDefId = "caseDefinitionId",
+        caseId = "caseId";
 
     @Mock
     CaseMilestoneListPresenter.CaseMilestoneListView caseMilestoneListView;
@@ -58,11 +58,11 @@ public class CaseMilestonesPresenterTest extends AbstractCaseInstancePresenterTe
 
     private static CaseMilestoneSummary createCaseMilestone() {
         return CaseMilestoneSummary.builder()
-                .identifier("identifier")
-                .name("milestoneName")
-                .status(CaseMilestoneStatus.AVAILABLE.getStatus())
-                .achieved(false)
-                .build();
+            .identifier("identifier")
+            .name("milestoneName")
+            .status(CaseMilestoneStatus.AVAILABLE.getStatus())
+            .achieved(false)
+            .build();
     }
 
     @Override
@@ -150,16 +150,16 @@ public class CaseMilestonesPresenterTest extends AbstractCaseInstancePresenterTe
         for (int i = 0; i < 25; i++) {
             caseMilestonesSummaryList.add(createCaseMilestone());
         }
-        
+
         presenter.loadMoreCaseMilestones();
 
         assertEquals(1,
                      presenter.getCurrentPage());
         verify(caseManagementService,
-                times(2)).getCaseMilestones(cis.getContainerId(),
-                                            cis.getCaseId(),
-                                            caseMilestoneListView.getCaseMilestoneSearchRequest(),
-                                            1,
-                                            presenter.getPageSize());
+               times(2)).getCaseMilestones(cis.getContainerId(),
+                                           cis.getCaseId(),
+                                           caseMilestoneListView.getCaseMilestoneSearchRequest(),
+                                           1,
+                                           presenter.getPageSize());
     }
 }

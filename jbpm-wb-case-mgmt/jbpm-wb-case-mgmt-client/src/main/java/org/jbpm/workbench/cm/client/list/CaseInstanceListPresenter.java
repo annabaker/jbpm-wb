@@ -78,46 +78,45 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
         setPageSize();
         refreshData();
     }
-    
+
     @Override
     public void setPageSize() {
-        this.pageSize = PAGE_SIZE;   
+        this.pageSize = PAGE_SIZE;
     }
 
     public void createCaseInstance() {
         newCaseInstancePresenter.show();
     }
-    
+
     private void loadButtonToggle() {
-        caseService.call((List<CaseInstanceSummary> cases) -> {            
+        caseService.call((List<CaseInstanceSummary> cases) -> {
             if (cases.isEmpty()) {
                 view.hideLoadButton();
-            }
-            else {
+            } else {
                 view.showLoadButton();
-            }           
+            }
         }).getCaseInstances(view.getCaseInstanceSearchRequest(),
                             getCurrentPage() + 1,
                             getPageSize());
     }
-    
+
     private void caseInstancesServiceCall() {
-        caseService.call((List<CaseInstanceSummary> caseInstances) -> {    
+        caseService.call((List<CaseInstanceSummary> caseInstances) -> {
             for (CaseInstanceSummary caseInstance : caseInstances) {
-                visibleCaseInstances.put(caseInstance.getCaseId(), caseInstance);
+                visibleCaseInstances.put(caseInstance.getCaseId(),
+                                         caseInstance);
             }
             ArrayList<CaseInstanceSummary> visibleCaseInstanceList = new ArrayList<CaseInstanceSummary>(visibleCaseInstances.values());
             //visibleCaseInstances.addAll(cases);       
-            view.setCaseInstanceList(visibleCaseInstanceList.stream().collect(toList())); 
+            view.setCaseInstanceList(visibleCaseInstanceList.stream().collect(toList()));
         }).getCaseInstances(view.getCaseInstanceSearchRequest(),
                             getCurrentPage(),
-                            getPageSize());       
+                            getPageSize());
         loadButtonToggle();
-        
+
         if (visibleCaseInstances.isEmpty()) {
             setCurrentPage(0);
         }
-
     }
 
     protected void refreshData() {
@@ -139,10 +138,10 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
 
     protected void cancelCaseInstance(final CaseInstanceSummary caseInstanceSummary) {
         caseService.call(
-                e -> {
-                    visibleCaseInstances.remove(caseInstanceSummary.getCaseId());
-                    refreshData();
-                }
+            e -> {
+                visibleCaseInstances.remove(caseInstanceSummary.getCaseId());
+                refreshData();
+            }
         ).cancelCaseInstance(null,
                              caseInstanceSummary.getContainerId(),
                              caseInstanceSummary.getCaseId());
@@ -150,10 +149,10 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
 
     protected void destroyCaseInstance(final CaseInstanceSummary caseInstanceSummary) {
         caseService.call(
-                e -> {
-                    visibleCaseInstances.remove(caseInstanceSummary.getCaseId());
-                    refreshData();
-                }
+            e -> {
+                visibleCaseInstances.remove(caseInstanceSummary.getCaseId());
+                refreshData();
+            }
         ).destroyCaseInstance(null,
                               caseInstanceSummary.getContainerId(),
                               caseInstanceSummary.getCaseId());
@@ -171,11 +170,11 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
     public void setCaseService(final Caller<CaseManagementService> caseService) {
         this.caseService = caseService;
     }
-    
+
     public void loadMoreCaseInstances() {
         setCurrentPage(getCurrentPage() + 1);
         caseInstancesServiceCall();
-    } 
+    }
 
     public interface CaseInstanceListView extends UberElement<CaseInstanceListPresenter> {
 
@@ -186,5 +185,5 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
         void hideLoadButton();
 
         void showLoadButton();
-    }   
+    }
 }
