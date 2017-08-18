@@ -61,11 +61,11 @@ public class CaseInstanceListPresenterTest {
 
     private static CaseInstanceSummary createCaseInstance() {
         return CaseInstanceSummary.builder()
-                .caseId("caseId")
-                .description("description")
-                .status(CaseStatus.OPEN)
-                .containerId("containerId")
-                .build();
+            .caseId("caseId")
+            .description("description")
+            .status(CaseStatus.OPEN)
+            .containerId("containerId")
+            .build();
     }
 
     @Before
@@ -126,7 +126,7 @@ public class CaseInstanceListPresenterTest {
         assertEquals(caseInstanceSummaryList.size(),
                      captor.getValue().size());
     }
-    
+
     @Test
     public void testSelectCaseInstance() {
         final CaseInstanceSummary cis = createCaseInstance();
@@ -150,9 +150,9 @@ public class CaseInstanceListPresenterTest {
 
     @Test
     public void testLoadMoreCaseInstances() {
-        
+
         presenter.init();
-        
+
         for (int i = 0; i < 19; i++) {
             caseInstanceSummaryList.add(createCaseInstance());
         }
@@ -163,14 +163,14 @@ public class CaseInstanceListPresenterTest {
         when(caseManagementService.getCaseInstances(view.getCaseInstanceSearchRequest(),
                                                     0,
                                                     presenter.getPageSize())).thenReturn(
-                caseInstanceSummaryList.subList(0,
-                                                presenter.getPageSize()));
+            caseInstanceSummaryList.subList(0,
+                                            presenter.getPageSize()));
 
         presenter.loadMoreCaseInstances();
 
-        verify(caseManagementService, times(2)).getCaseInstances(view.getCaseInstanceSearchRequest(),
-                                                       1,
-                                                       presenter.getPageSize());
-        
+        verify(caseManagementService,
+               times(2)).getCaseInstances(view.getCaseInstanceSearchRequest(),
+                                          1,
+                                          presenter.getPageSize());
     }
 }

@@ -156,8 +156,8 @@ public class RemoteCaseManagementServiceImpl implements CaseManagementService {
                                                  true,
                                                  true,
                                                  true))
-                .map(new CaseInstanceMapper())
-                .orElse(null);
+            .map(new CaseInstanceMapper())
+            .orElse(null);
     }
 
     @Override
@@ -301,12 +301,12 @@ public class RemoteCaseManagementServiceImpl implements CaseManagementService {
                                                                PAGE_SIZE_UNLIMITED);
 
         return activeNodes.stream()
-                .map(s -> new CaseActionNodeInstanceMapper(
-                        (NODE_TYPE_HUMAN_TASK.contains(s.getNodeType()) ?
-                                userTaskServicesClient.findTaskByWorkItemId(s.getWorkItemId()).getActualOwner() :
-                                ""),
-                        CaseActionStatus.IN_PROGRESS).apply(s))
-                .collect(toList());
+            .map(s -> new CaseActionNodeInstanceMapper(
+                (NODE_TYPE_HUMAN_TASK.contains(s.getNodeType()) ?
+                    userTaskServicesClient.findTaskByWorkItemId(s.getWorkItemId()).getActualOwner() :
+                    ""),
+                CaseActionStatus.IN_PROGRESS).apply(s))
+            .collect(toList());
     }
 
     public List<NodeInstance> getCaseCompletedNodes(String containerId,
@@ -322,21 +322,21 @@ public class RemoteCaseManagementServiceImpl implements CaseManagementService {
         List<NodeInstance> activeNodes = getCaseCompletedNodes(containerId,
                                                                caseId);
         return activeNodes.stream()
-                .map(s -> new CaseActionNodeInstanceMapper(
-                        (NODE_TYPE_HUMAN_TASK.contains(s.getNodeType()) ?
-                                userTaskServicesClient.findTaskByWorkItemId(s.getWorkItemId()).getActualOwner() :
-                                ""),
-                        CaseActionStatus.COMPLETED).apply(s))
-                .collect(toList());
+            .map(s -> new CaseActionNodeInstanceMapper(
+                (NODE_TYPE_HUMAN_TASK.contains(s.getNodeType()) ?
+                    userTaskServicesClient.findTaskByWorkItemId(s.getWorkItemId()).getActualOwner() :
+                    ""),
+                CaseActionStatus.COMPLETED).apply(s))
+            .collect(toList());
     }
 
     public List<CaseActionSummary> getAdHocFragments(String containerId,
                                                      String caseId) {
         return client.getAdHocFragments(containerId,
                                         caseId)
-                .stream()
-                .map(new CaseActionAdHocMapper(""))
-                .collect(toList());
+            .stream()
+            .map(new CaseActionAdHocMapper(""))
+            .collect(toList());
     }
 
     public List<CaseActionSummary> getAdHocActions(String serverTemplateId,
@@ -348,13 +348,13 @@ public class RemoteCaseManagementServiceImpl implements CaseManagementService {
                                                                   containerId,
                                                                   caseId);
         caseInstanceSummary.getStages().stream()
-                .filter(s -> s.getStatus().equals(CaseStageStatus.ACTIVE.getStatus()))
-                .forEach(ah -> {
-                    if (ah.getAdHocActions().size() > 0) {
-                        adHocActions.addAll(ah.getAdHocActions());
-                    }
-                    return;
-                });
+            .filter(s -> s.getStatus().equals(CaseStageStatus.ACTIVE.getStatus()))
+            .forEach(ah -> {
+                if (ah.getAdHocActions().size() > 0) {
+                    adHocActions.addAll(ah.getAdHocActions());
+                }
+                return;
+            });
         return adHocActions;
     }
 
