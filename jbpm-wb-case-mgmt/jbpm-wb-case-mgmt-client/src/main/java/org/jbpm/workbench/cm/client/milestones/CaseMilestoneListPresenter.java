@@ -49,8 +49,6 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
         setPageSize();
     }
 
-    Logger logger = Logger.getLogger("CaseMilestoneListPresenter");
-
     @WorkbenchPartTitle
     public String getTitle() {
         return translationService.format(MILESTONES);
@@ -92,13 +90,7 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
                              getCurrentPage(),
                              getPageSize());
 
-        logger.log(Level.SEVERE,
-                   "page number before:" + getCurrentPage());
-
         loadButtonToggle();
-
-        logger.log(Level.SEVERE,
-                   "page number after:" + getCurrentPage());
     }
 
     protected void loadMoreCaseMilestones() {

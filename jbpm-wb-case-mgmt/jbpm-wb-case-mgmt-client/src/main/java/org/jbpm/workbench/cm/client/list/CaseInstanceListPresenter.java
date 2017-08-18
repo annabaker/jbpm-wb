@@ -49,7 +49,7 @@ import static java.util.stream.Collectors.toList;
 @WorkbenchScreen(identifier = CaseInstanceListPresenter.SCREEN_ID)
 public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceListPresenter.CaseInstanceListView> {
 
-    public static final int PAGE_SIZE = 2;
+    public static final int PAGE_SIZE = 10;
 
     public static final String SCREEN_ID = "Case List";
 
@@ -106,8 +106,7 @@ public class CaseInstanceListPresenter extends AbstractPresenter<CaseInstanceLis
                 visibleCaseInstances.put(caseInstance.getCaseId(),
                                          caseInstance);
             }
-            ArrayList<CaseInstanceSummary> visibleCaseInstanceList = new ArrayList<CaseInstanceSummary>(visibleCaseInstances.values());
-            //visibleCaseInstances.addAll(cases);       
+            ArrayList<CaseInstanceSummary> visibleCaseInstanceList = new ArrayList<CaseInstanceSummary>(visibleCaseInstances.values());      
             view.setCaseInstanceList(visibleCaseInstanceList.stream().collect(toList()));
         }).getCaseInstances(view.getCaseInstanceSearchRequest(),
                             getCurrentPage(),
