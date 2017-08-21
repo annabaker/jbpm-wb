@@ -18,9 +18,7 @@ package org.jbpm.workbench.cm.client.milestones;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import java.util.Set;
 import javax.enterprise.context.Dependent;
 
 import org.jbpm.workbench.cm.client.util.AbstractCaseInstancePresenter;
@@ -43,7 +41,7 @@ public class CaseMilestoneListPresenter extends AbstractCaseInstancePresenter<Ca
 
     public static final String SCREEN_ID = "Case Milestone List";
 
-    HashSet<CaseMilestoneSummary> visibleCaseMilestones = new HashSet<CaseMilestoneSummary>();
+    Set<CaseMilestoneSummary> visibleCaseMilestones = new HashSet<CaseMilestoneSummary>();
 
     public CaseMilestoneListPresenter() {
         setPageSize();
