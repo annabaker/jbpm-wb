@@ -17,7 +17,6 @@
 package org.jbpm.workbench.cm.client.list;
 
 import java.util.List;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 

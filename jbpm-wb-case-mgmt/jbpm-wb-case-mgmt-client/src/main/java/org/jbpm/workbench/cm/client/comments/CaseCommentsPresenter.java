@@ -19,7 +19,6 @@ package org.jbpm.workbench.cm.client.comments;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
