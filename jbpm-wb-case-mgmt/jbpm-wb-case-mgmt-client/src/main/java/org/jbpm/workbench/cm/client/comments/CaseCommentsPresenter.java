@@ -16,9 +16,10 @@
 
 package org.jbpm.workbench.cm.client.comments;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -48,7 +49,7 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
 
     public static final int PAGE_SIZE = 20;
 
-    HashMap<String, CaseCommentSummary> visibleCaseComments = new HashMap<String, CaseCommentSummary>();
+    Set<CaseCommentSummary> visibleCaseComments = new HashSet<CaseCommentSummary>();
 
     public CaseCommentsPresenter() {
         setPageSize();
@@ -76,12 +77,8 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
     private void commentsServiceCall() {
         caseService.call(
             (List<CaseCommentSummary> comments) -> {
-                for (CaseCommentSummary comment : comments) {
-                    visibleCaseComments.put(comment.getId(),
-                                            comment);
-                }
-                ArrayList<CaseCommentSummary> visibleCaseCommentList = new ArrayList<CaseCommentSummary>(visibleCaseComments.values());
-                view.setCaseCommentList(visibleCaseCommentList.stream()
+                visibleCaseComments.addAll(comments);
+                view.setCaseCommentList(visibleCaseComments.stream()
                                             .sorted((sortAsc ?
                                                 comparing(CaseCommentSummary::getAddedAt) :
                                                 comparing(CaseCommentSummary::getAddedAt).reversed()))
@@ -127,9 +124,8 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
                                      String caseCommentNewText) {
         caseService.call(
             (Void) -> {
-                visibleCaseComments.put(caseCommentSummary.getId(),
-                                        caseCommentSummary);
-
+                visibleCaseComments.remove(caseCommentSummary);
+                visibleCaseComments.add(caseCommentSummary);
                 refreshComments();
             }
         ).updateComment(serverTemplateId,
@@ -143,7 +139,7 @@ public class CaseCommentsPresenter extends AbstractCaseInstancePresenter<CaseCom
     protected void deleteCaseComment(final CaseCommentSummary caseCommentSummary) {
         caseService.call(
             (Void) -> {
-                visibleCaseComments.remove(caseCommentSummary.getId());
+                visibleCaseComments.remove(caseCommentSummary);
                 refreshComments();
             }
         ).removeComment(serverTemplateId,
