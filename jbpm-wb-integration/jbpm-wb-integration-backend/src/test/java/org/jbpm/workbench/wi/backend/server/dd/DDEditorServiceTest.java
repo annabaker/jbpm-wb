@@ -19,10 +19,15 @@ package org.jbpm.workbench.wi.backend.server.dd;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.guvnor.common.services.shared.message.Level;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jbpm.workbench.wi.dd.model.DeploymentDescriptorModel;
+import org.jbpm.workbench.wi.dd.model.ItemObjectModel;
+import org.jbpm.workbench.wi.dd.validation.DeploymentDescriptorValidationMessage;
 import org.jgroups.util.UUID;
 import org.junit.Test;
 import org.kie.internal.runtime.conf.AuditMode;
@@ -32,6 +37,8 @@ import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.kie.test.util.compare.ComparePair;
+
+import static org.junit.Assert.*;
 
 public class DDEditorServiceTest extends DDEditorServiceImpl {
 
@@ -135,5 +142,140 @@ public class DDEditorServiceTest extends DDEditorServiceImpl {
                 .addNullFields("ItemObjectModel.name",
                                "DeploymentDescriptorModel.overview")
                 .compare();
+    }
+
+    @Test
+    public void testValidateEmptyResolver() {
+        List<NamedObjectModel> models = Arrays.asList(new NamedObjectModel[]{
+                new NamedObjectModel(null,
+                        "item-name",
+                        "handler-classname")});
+
+        List<ValidationMessage> validationMessages = validateObjectModels(null, models);
+        assertEquals(1, validationMessages.size());
+
+        ValidationMessage error = validationMessages.get(0);
+        assertEquals(Level.ERROR, error.getLevel());
+        assertTrue(error.getText().startsWith("No resolver selected"));
+
+        models = Arrays.asList(new NamedObjectModel[]{
+                new NamedObjectModel("",
+                        "item-name",
+                        "handler-classname")});
+
+        validationMessages = validateObjectModels(null, models);
+        assertEquals(1, validationMessages.size());
+
+        error = validationMessages.get(0);
+        assertEquals(Level.ERROR, error.getLevel());
+        assertTrue(error.getText().startsWith("Not valid resolver selected"));
+
+
+        assertTrue(error instanceof DeploymentDescriptorValidationMessage);
+        assertEquals(I18N_KEY_NOT_VALID_RESOLVER, ((DeploymentDescriptorValidationMessage) error).getKey());
+    }
+
+    @Test
+    public void testValidateReflectionResolver() {
+        List<NamedObjectModel> models = Arrays.asList(new NamedObjectModel[]{
+                new NamedObjectModel(ItemObjectModel.REFLECTION_RESOLVER,
+                        "item-name",
+                        "java.lang.String")});
+
+        List<ValidationMessage> validationMessages = validateObjectModels(null, models);
+        assertEquals(0, validationMessages.size());
+
+    }
+
+    @Test
+    public void testValidateReflectionResolverInvalid() {
+        List<NamedObjectModel> models = Arrays.asList(new NamedObjectModel[]{
+                new NamedObjectModel(ItemObjectModel.REFLECTION_RESOLVER,
+                        "item-name",
+                        "handler-classname")});
+
+        List<ValidationMessage> validationMessages = validateObjectModels(null, models);
+        assertEquals(1, validationMessages.size());
+
+        ValidationMessage error = validationMessages.get(0);
+        assertEquals(Level.ERROR, error.getLevel());
+        assertTrue(error.getText().startsWith("Identifier is not valid Java class which is required by reflection resolver"));
+
+        assertTrue(error instanceof DeploymentDescriptorValidationMessage);
+        assertEquals(I18N_KEY_NOT_VALID_REFLECTION_IDENTIFIER, ((DeploymentDescriptorValidationMessage) error).getKey());
+    }
+
+    @Test
+    public void testValidateReflectionResolverMissingIdentifier() {
+        List<NamedObjectModel> models = Arrays.asList(new NamedObjectModel[]{
+                new NamedObjectModel(ItemObjectModel.REFLECTION_RESOLVER,
+                        "item-name",
+                        "")});
+
+        List<ValidationMessage> validationMessages = validateObjectModels(null, models);
+        assertEquals(2, validationMessages.size());
+
+        ValidationMessage error = validationMessages.get(0);
+        assertEquals(Level.ERROR, error.getLevel());
+        assertTrue(error.getText().startsWith("Identifier cannot be empty"));
+
+        assertTrue(error instanceof DeploymentDescriptorValidationMessage);
+        assertEquals(I18N_KEY_MISSING_IDENTIFIER, ((DeploymentDescriptorValidationMessage) error).getKey());
+
+        error = validationMessages.get(1);
+        assertEquals(Level.ERROR, error.getLevel());
+        assertTrue(error.getText().startsWith("Identifier is not valid Java class which is required by reflection resolver"));
+
+        assertTrue(error instanceof DeploymentDescriptorValidationMessage);
+        assertEquals(I18N_KEY_NOT_VALID_REFLECTION_IDENTIFIER, ((DeploymentDescriptorValidationMessage) error).getKey());
+    }
+
+    @Test
+    public void testValidateReflectionResolverNameEmpty() {
+        List<NamedObjectModel> models = Arrays.asList(new NamedObjectModel[]{
+                new NamedObjectModel(ItemObjectModel.REFLECTION_RESOLVER,
+                        "",
+                        "java.lang.String")});
+
+        List<ValidationMessage> validationMessages = validateObjectModels(null, models);
+        assertEquals(1, validationMessages.size());
+
+        ValidationMessage error = validationMessages.get(0);
+        assertEquals(Level.ERROR, error.getLevel());
+        assertTrue(error.getText().startsWith("Name cannot be empty"));
+
+
+        assertTrue(error instanceof DeploymentDescriptorValidationMessage);
+        assertEquals(I18N_KEY_MISSING_NAME, ((DeploymentDescriptorValidationMessage) error).getKey());
+    }
+
+    @Test
+    public void testValidateMvelResolver() {
+        List<NamedObjectModel> models = Arrays.asList(new NamedObjectModel[]{
+                new NamedObjectModel(ItemObjectModel.MVEL_RESOLVER,
+                        "item-name",
+                        "new String()")});
+
+        List<ValidationMessage> validationMessages = validateObjectModels(null, models);
+        assertEquals(0, validationMessages.size());
+
+    }
+
+    @Test
+    public void testValidateMvelResolverInvalid() {
+        List<NamedObjectModel> models = Arrays.asList(new NamedObjectModel[]{
+                new NamedObjectModel(ItemObjectModel.MVEL_RESOLVER,
+                        "item-name",
+                        "handler-classname")});
+
+        List<ValidationMessage> validationMessages = validateObjectModels(null, models);
+        assertEquals(1, validationMessages.size());
+
+        ValidationMessage error = validationMessages.get(0);
+        assertEquals(Level.WARNING, error.getLevel());
+        assertTrue(error.getText().startsWith("Could not compile mvel expression"));
+
+        assertTrue(error instanceof DeploymentDescriptorValidationMessage);
+        assertEquals(I18N_KEY_NOT_VALID_MVEL_IDENTIFIER, ((DeploymentDescriptorValidationMessage) error).getKey());
     }
 }

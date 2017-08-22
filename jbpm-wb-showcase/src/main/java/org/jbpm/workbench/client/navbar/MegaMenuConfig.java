@@ -13,24 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.workbench.common.client.events;
 
-public class SearchEvent {
+package org.jbpm.workbench.client.navbar;
 
-    private String filter;
+import javax.enterprise.context.ApplicationScoped;
 
-    public SearchEvent(String filter) {
-        this.filter = filter;
+import org.uberfire.client.workbench.widgets.menu.megamenu.brand.MegaMenuBrand;
+
+@ApplicationScoped
+public class MegaMenuConfig implements MegaMenuBrand {
+
+    @Override
+    public String brandImageUrl() {
+        return "images/jbpm_logo.png";
     }
 
-    public SearchEvent() {
+    @Override
+    public String brandImageLabel() {
+        return null;
     }
 
-    public String getFilter() {
-        return filter;
-    }
-
-    public void setFilter(String filter) {
-        this.filter = filter;
+    @Override
+    public String menuAccessorLabel() {
+        return null;
     }
 }

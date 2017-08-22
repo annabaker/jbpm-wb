@@ -103,16 +103,6 @@ public abstract class AbstractTaskListPresenter<V extends AbstractTaskListPresen
                     dataSetQueryHelper.setLastSortOrder(SortOrder.ASCENDING);
                 }
 
-                final List<ColumnFilter> filters = getColumnFilters(textSearchStr);
-                if (filters.isEmpty() == false) {
-                    if (currentTableSettings.getDataSetLookup().getFirstFilterOp() != null) {
-                        currentTableSettings.getDataSetLookup().getFirstFilterOp().addFilterColumn(OR(filters));
-                    } else {
-                        final DataSetFilter filter = new DataSetFilter();
-                        filter.addFilterColumn(OR(filters));
-                        currentTableSettings.getDataSetLookup().addOperation(filter);
-                    }
-                }
                 dataSetQueryHelper.setDataSetHandler(currentTableSettings);
                 dataSetQueryHelper.lookupDataSet(visibleRange.getStart(),
                                                  createDataSetTaskCallback(visibleRange.getStart(),
@@ -121,28 +111,6 @@ public abstract class AbstractTaskListPresenter<V extends AbstractTaskListPresen
         } catch (Exception e) {
             errorPopup.showMessage(constants.UnexpectedError(e.getMessage()));
         }
-    }
-
-    protected List<ColumnFilter> getColumnFilters(final String searchString) {
-        final List<ColumnFilter> filters = new ArrayList<ColumnFilter>();
-        if (searchString != null && searchString.trim().length() > 0) {
-            try {
-                final Long taskId = Long.valueOf(searchString.trim());
-                filters.add(equalsTo(COLUMN_TASK_ID,
-                                     taskId));
-            } catch (NumberFormatException ex) {
-                filters.add(likeTo(COLUMN_NAME,
-                                   "%" + searchString.toLowerCase() + "%",
-                                   false));
-                filters.add(likeTo(COLUMN_DESCRIPTION,
-                                   "%" + searchString.toLowerCase() + "%",
-                                   false));
-                filters.add(likeTo(COLUMN_PROCESS_ID,
-                                   "%" + searchString.toLowerCase() + "%",
-                                   false));
-            }
-        }
-        return filters;
     }
 
     /**
@@ -413,7 +381,7 @@ public abstract class AbstractTaskListPresenter<V extends AbstractTaskListPresen
         final DefaultPlaceRequest defaultPlaceRequest = new DefaultPlaceRequest("Task Details Multi");
         final PlaceStatus status = placeManager.getStatus(defaultPlaceRequest);
         boolean logOnly = false;
-        if (summary.getStatus().equals(TASK_STATUS_COMPLETED) && summary.isLogOnly()) {
+        if (summary.getStatus().equals(TASK_STATUS_COMPLETED)) {
             logOnly = true;
         }
         if (status == PlaceStatus.CLOSE) {
@@ -423,14 +391,28 @@ public abstract class AbstractTaskListPresenter<V extends AbstractTaskListPresen
                                                      summary.getId(),
                                                      summary.getName(),
                                                      summary.isForAdmin(),
-                                                     logOnly));
+                                                     logOnly,
+                                                     summary.getDescription(),
+                                                     summary.getExpirationTime(),
+                                                     summary.getStatus(),
+                                                     summary.getActualOwner(),
+                                                     summary.getPriority(),
+                                                     summary.getProcessInstanceId(),
+                                                     summary.getProcessId()));
         } else if (status == PlaceStatus.OPEN && !close) {
             taskSelected.fire(new TaskSelectionEvent(getSelectedServerTemplate(),
                                                      summary.getDeploymentId(),
                                                      summary.getId(),
                                                      summary.getName(),
                                                      summary.isForAdmin(),
-                                                     logOnly));
+                                                     logOnly,
+                                                     summary.getDescription(),
+                                                     summary.getExpirationTime(),
+                                                     summary.getStatus(),
+                                                     summary.getActualOwner(),
+                                                     summary.getPriority(),
+                                                     summary.getProcessInstanceId(),
+                                                     summary.getProcessId()));
         } else if (status == PlaceStatus.OPEN && close) {
             placeManager.closePlace("Task Details Multi");
         }

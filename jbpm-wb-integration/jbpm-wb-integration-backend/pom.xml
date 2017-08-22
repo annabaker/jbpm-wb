@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.jbpm</groupId>
     <artifactId>jbpm-wb-integration</artifactId>
-    <version>7.1.0-SNAPSHOT</version>
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>jbpm-wb-integration-backend</artifactId>
@@ -143,15 +143,15 @@
     </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-ala-registry-local</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-ala-build-maven</artifactId>
     </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-ala-wildfly-provider</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-ala-openshift-provider</artifactId>
     </dependency>
 
     <dependency>
@@ -198,6 +198,11 @@
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-library-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mvel</groupId>
+      <artifactId>mvel2</artifactId>
     </dependency>
 
     <!-- Test dependencies -->

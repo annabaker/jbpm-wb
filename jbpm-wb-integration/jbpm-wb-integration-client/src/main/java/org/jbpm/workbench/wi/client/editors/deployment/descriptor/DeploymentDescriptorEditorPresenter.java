@@ -132,7 +132,7 @@ public class DeploymentDescriptorEditorPresenter extends KieEditor {
                             notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
                                                                     NotificationEvent.NotificationType.SUCCESS));
                         } else {
-                            validationPopup.showMessages(results);
+                            validationPopup.showTranslatedMessages(results);
                         }
                     }
                 }).validate(versionRecordManager.getCurrentPath(),
@@ -246,8 +246,12 @@ public class DeploymentDescriptorEditorPresenter extends KieEditor {
     }
 
     protected void makeMenuBar() {
+        if (canUpdateProject()) {
+            fileMenuBuilder
+                    .addSave(versionRecordManager.newSaveMenuItem(() -> onSave()));
+        }
+
         fileMenuBuilder
-                .addSave(versionRecordManager.newSaveMenuItem(() -> onSave()))
                 .addValidate(onValidate())
                 .addNewTopLevelMenu(versionRecordManager.buildMenu());
     }
